@@ -15,7 +15,7 @@ MarkupSafe==1.0
 pycparser==2.18
 six==1.11.0
 SQLAlchemy==1.2.7
-Werkzeug==0.15
+Werkzeug==0.15.3
 WTForms==2.1
 pandas==0.23.4
 numpy==1.16.1
