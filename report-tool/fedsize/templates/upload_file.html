@@ -30,16 +30,13 @@
            
 
 
-            <form action = "/uploader" method = "POST" enctype = "multipart/form-data" style="margin-top:20px;">
+            <form id="upl_file" action = "{{ url_for('uploader') }}" method = "POST" enctype = "multipart/form-data" style="margin-top:20px;">
 
-              <label for="file-upload" class="btn btn-blue-light" style="display:table-cell;">
+              <label for="file-upload3" class="btn btn-blue-light" style="display:table-cell;">
                      <i class="fa fa-cloud-upload"></i> Add File
               </label>
-              <input id="file-upload" name='file' type="file" style="display:none;" onchange="form.submit()">
-              
-               
-               <p>
-                {% with messages = get_flashed_messages() %}
+
+               {% with messages = get_flashed_messages() %}
                   {% if messages %}
                   <ul class=flashes>
                   {% for message in messages %}
@@ -48,14 +45,10 @@
                   </ul>
                   {% endif %}
                 {% endwith %}
-            </p>
 
-                
-              
-            
-                
-            
-               
+              <input id="file-upload3" name='file' type="file" style="display:none;" >
+
+
 
             </form>
 

@@ -29,8 +29,10 @@
                    </div>
                 </div>
 
+               <p>&nbsp;</p>
 
-                <div class="form-group">
+
+                <div class="form-group password-section">
                    <div class="form-control">
                     {{ form.password.label(class="form-control-label") }}
                     {% if form.password.errors %}
@@ -46,6 +48,18 @@
                  </div>
                 </div>
 
+
+                <p>
+                {% with messages = get_flashed_messages() %}
+                  {% if messages %}
+                  <ul class=flashes>
+                  {% for message in messages %}
+                    <li style="color:red;">{{ message }}</li>
+                  {% endfor %}
+                  </ul>
+                  {% endif %}
+                {% endwith %}
+                </p>
                 
             
                  <div class="form-group">
@@ -56,6 +70,7 @@
             
         </form>
 
+        <p>&nbsp;</p>
         <a style="color: #1d4f90;">Forgot Password</a>
      </div>
     

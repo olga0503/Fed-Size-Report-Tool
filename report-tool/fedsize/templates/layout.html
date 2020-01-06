@@ -139,6 +139,14 @@
 
  .sticky-thead > table{border: none!important;}
 
+ .invalid-feedback span {color:red;}
+
+ .form-control input:not(.checkbox-input):not(.radio-input):not([type=checkbox]):not(.select2-search__field) {
+    margin-bottom: 0px;}
+
+ .password-section,
+ .form-group .btn-blue-light{margin-bottom:30px;}
+
   </style>
 
 
@@ -164,6 +172,8 @@ $(function(){
     });
 
 
+
+
     //function myFunction() {
   //var element = document.getElementById("myDIV");
   //element.classList.add("mystyle");
@@ -177,6 +187,14 @@ $(function(){
   var link = window.location.href
 
   var i;
+
+  function my_func(){
+      $('#add_fed').sumbit();
+  }
+
+  function my_func2(){
+      $('#upl_file').sumbit();
+  }
           
 
  $(function(){
@@ -187,6 +205,15 @@ $(function(){
     
     
   });
+
+    $("#file-upload3").on('change',function() {
+     $("#upl_file").submit();
+});
+
+
+    $("#file-upload2").on('change',function() {
+     $("#add_fed").submit();
+});
 
    
    for (i = 0; i < 20; i++) {
@@ -203,9 +230,12 @@ $(function(){
       $rows.filter(':lt(' + (lastActiveIndex + 20) + ')').addClass('active');
     });
 
-    $('{% if current_user.is_authenticated %}<footer><div class="container"><div class="row"><div class="col-12"><div style="text-align: center;"><form action="/" method="POST" enctype="multipart/form-data" style="margin-top:20px;"><label for="file-upload" class="btn" style="display:table-cell;float:right;"><i class="fa fa-cloud-upload"></i> Add Federations</label><input id="file-upload" name="file" type="file" style="display:none;" onchange="form.submit()"><p></p></form></div></div></div></div></footer>{% endif %}').appendTo('body');
+    $('{% if current_user.is_authenticated %}<footer><div class="container"><div class="row"><div class="col-12"><div style="text-align: center;"><form id="add_fed" action="/add_fed_file" method="POST" enctype="multipart/form-data" style="margin-top:20px;"><label for="file-upload2" class="btn" style="display:table-cell;float:right;"><i class="fa fa-cloud-upload"></i> Add Federations</label><input id="file-upload2" name="file" type="file" style="display:none;" ><p></p></form></div></div></div></div></footer>{% endif %}').appendTo('body');
 
     $(link).prependTo('#url');
+
+
+
 
     $('.sticky-wrap.table-sticky > table').clone().prependTo('.sticky-thead');
     //$('.body > header > div > div > div > div > a.logo').clone().prependTo('.sticky-thead');
@@ -268,9 +298,9 @@ $(window).scroll(function() {
   
 
     {% if title %}
-        <title>Flask Blog - {{ title }}</title>
+        <title>{{ title }}</title>
     {% else %}
-        <title>Flask Blog</title>
+        <title></title>
     {% endif %}
 </head>
 <body>

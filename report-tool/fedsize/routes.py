@@ -3,6 +3,7 @@ import numpy as np
 
 
 from datetime import datetime
+import time
 from fedsize import app, db, bcrypt
 from flask_bcrypt import Bcrypt
 from flask import render_template, url_for, flash, redirect, request, session, send_from_directory
@@ -20,6 +21,7 @@ UPLOAD_FOLDER = '/path/to/the/uploads'
 
 
 app.config['IMAGE_UPLOADS'] = "/report-tool/fedsize/uploads"
+app.config['FED_UPLOADS'] = "/report-tool/fedsize/federations"
 app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["CSV","XLS","XLSX"]
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
 
@@ -70,8 +72,6 @@ def home():
 @app.route("/login", methods=['GET', 'POST'])
 def login():
 
-    users = pd.read_csv(os.path.join(app.config["IMAGE_UPLOADS"], 'users.csv'))
-
     x=bcrypt.generate_password_hash("fedsize").decode('utf-8')
     #x=bcrypt.check_password_hash(up, 'fedsize')
 
@@ -85,8 +85,8 @@ def login():
             next_page = request.args.get('next')
             return redirect(next_page) if next_page else redirect(url_for('home'))
         else:
-            #flash('Login Unsuccessful. Please check email and password', 'danger')
-            return redirect('/')
+            flash('Login Unsuccessful. Please check email and password', 'danger')
+            return redirect('/login')
 
     return render_template('login.html', title='Login', form=form)
 
@@ -150,11 +150,36 @@ def uploader():
         columns = session.get('file_columns')
 
         return render_template("upload.html", filename = filename, columns = columns)
-    
-    
 
-            
 
+@app.route("/add_fed_file", methods=["GET", "POST"])
+def add_fed_file():
+    if request.method == "POST":
+
+        if request.files:
+
+            file = request.files["file"]
+
+            if file.filename == '':
+                flash('No file selected for uploading')
+                return redirect('/')
+
+            if not allowed_file(file.filename):
+                flash('Unsupported file type')
+                return redirect('/')
+
+            filename = secure_filename(file.filename)
+
+            path = os.path.join(app.config["FED_UPLOADS"], filename)
+
+            file.save(path)
+
+            if not check_csv(filename):
+                upl_file = pd.read_excel(path, sheetname="Sheet1", index_col=None)
+            else:
+                upl_file = pd.read_csv(path)
+
+            upl_file.to_csv(os.path.join(app.config['FED_UPLOADS'], filename), index=False)
 
 
 
@@ -178,7 +203,7 @@ def federation_by_size(size):
     y = x.get_group(size)
     num = y.shape[0]
 
-    return render_template("federation_by_size.html",tables=[y.to_html(classes='table-sticky sticky-enabled', index=False)], fed_sizes=city_size_num, num=num)
+    return render_template("federation_by_size.html", tables=[y.to_html(classes='table-sticky sticky-enabled', index=False)], fed_sizes=city_size_num, num=num)
 
 
 
@@ -192,29 +217,39 @@ def federation_by_size_all():
         columns = session.get('file_columns')
 
         feds = pd.read_csv(os.path.join(app.config["IMAGE_UPLOADS"], 'federations.csv'))
-        feds['City-Size'] = feds['City-Size'].replace(['1Large','3Inter','2LrgeInter','5SmallFed'],['Large','Intermidiate','Large Intermidiate','Small'])
+        feds['City-Size'] = feds['City-Size'].replace(['1Large','3Inter','2LrgeInter','5SmallFed'],[' Large','Intermidiate',' Large Intermidiate','Small'])
 
         upl_file = pd.read_csv(path)   
 
 
-        merge_field = request.form.get('field') 
+        merge_field = request.form.get('field')
+        upl_file[merge_field] = upl_file[merge_field].str.title()
+        feds['Community'] = feds['Community'].str.title()
 
         report = upl_file.merge(feds, left_on=merge_field, right_on='Community', how='outer')
+
         report['City-Size'].fillna('None',inplace=True)
 
         cols = list(report)
 
-        if 'City-Size' in cols:
-            # move the column to head of list using index, pop and insert
-            cols.insert(0, cols.pop(cols.index('City-Size')))
-
         if 'Federation Name ' in cols:
-            cols.insert(1, cols.pop(cols.index('Federation Name ')))
+            # move the column to head of list using index, pop and insert
+            cols.insert(0, cols.pop(cols.index('Federation Name ')))
+
+        if 'City-Size' in cols:
+            cols.insert(1, cols.pop(cols.index('City-Size')))
         
         report=report[cols]
         report.to_csv(path, index=False)
         
-        city_size_num = pd.DataFrame(report.groupby('City-Size')['First Name'].count()).reset_index() 
+        city_size_num = pd.DataFrame(report.groupby('City-Size')['First Name'].count()).reset_index()
+        cols2 = list(city_size_num.columns)
+        if 'Large' in cols2:
+            # move the column to head of list using index, pop and insert
+            cols2.insert(0, cols2.pop(cols2.index('Large')))
+
+        city_size_num = city_size_num[cols2]
+
         city_size_num.to_csv(os.path.join(app.config["IMAGE_UPLOADS"], 'city_size_num.csv'), index=False)
         r=pd.read_csv(path) 
         
@@ -222,7 +257,7 @@ def federation_by_size_all():
         #form = Form()
         #form.city.choices = [row for index, row in city_size_num.iterrows()]
 
-        return render_template("federation_by_size_all.html",tables=[report.to_html(classes='table-sticky sticky-enabled',index=False)], fed_sizes=city_size_num, columns=columns, r=r, filename=filename) 
+        return render_template("federation_by_size_all.html", tables=[report.to_html(classes='table-sticky sticky-enabled',index=False)], fed_sizes=city_size_num, columns=columns, r=r, filename=filename)
 
     if request.method == "GET":
 
@@ -307,9 +342,9 @@ def download():
         m = pd.read_csv(filepath)
 
         report = m[m['City-Size']==s]
-        report.to_csv(os.path.join(app.config["IMAGE_UPLOADS"], filename.rsplit(".", 1)[0]+"_" +s + "_"+time.strftime("%B-%d-%H:%M:%S")+"."+filename.rsplit(".", 1)[1]), index=False)
+        report.to_csv(os.path.join(app.config["IMAGE_UPLOADS"], filename.rsplit(".", 1)[0]+"_"+s+"_"+time.strftime("%B-%d-%H:%M:%S")+"."+filename.rsplit(".", 1)[1]), index=False)
 
-        return send_from_directory(app.config["IMAGE_UPLOADS"], filename=filename.rsplit(".", 1)[0]+"_" +s + "_"+time.strftime("%B-%d-%H:%M:%S")+"."+filename.rsplit(".", 1)[1], as_attachment=True)
+        return send_from_directory(app.config["IMAGE_UPLOADS"], filename = filename.rsplit(".", 1)[0] + "_" + s + "_" + time.strftime("%B-%d-%H:%M:%S")+"."+filename.rsplit(".", 1)[1], as_attachment=True)
         #return render_template("xxx.html",s=s)
     
              
