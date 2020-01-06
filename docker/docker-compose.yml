@@ -1,0 +1,33 @@
+version: '2.3'
+
+services:
+
+    mysql:
+        image: mysql/mysql-server:5.7
+        ports:
+            - "3306:3306"
+        expose:
+            - "3306"
+        container_name: dbserver
+        environment:
+            MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+            MYSQL_DATABASE: report_db
+            MYSQL_USER: mysql
+            MYSQL_PASSWORD: test_pass_15
+        volumes:
+            - ~/db_data:/var/lib/mysql
+
+    report-tool:
+        build:
+            context: ../
+            dockerfile: docker/Dockerfile
+        restart: always
+        container_name: report-tool
+        depends_on:
+             - mysql
+        links:
+             - mysql
+        ports:
+             - "80:5000"
+
+
