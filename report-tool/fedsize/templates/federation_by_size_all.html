@@ -59,7 +59,7 @@
                     <button type="submit">Do</button>-->
 
                </form>
-              <a class="btn export-btn btn-grey download" onclick="window.location.href='{{ url_for('download') }}';" target="_blank"><i class="fa fa-cloud-download"></i> Export Report</a>
+              <a class="btn export-btn btn-grey download" onclick="window.location.href='{{ url_for('download_all') }}';" target="_blank"><i class="fa fa-cloud-download"></i> Export Report</a>
               <!--<a class="btn export-btn btn-grey download" onclick="window.location.href='{{ url_for('analysis') }}';" target="_blank" >Advanced Analysis</a>-->
               <a class="btn new-report btn-grey download" href="/" target="_blank"><i class="fa fa-cloud-upload"></i> New File</a>
                
@@ -118,25 +118,16 @@
                   </div>
           </div>
 
-          <script>
-            
 
-          $(function(){
 
-    
 
-    
-    
-    
-    
+<script>
+function preventBack(){window.history.forward();}
+    setTimeout("preventBack()", 0);
+    window.onunload=function(){null};
+    </script>
+
 
 
    
-    
-
-   });
-
-
-          </script>
-   
-{% endblock content %}
+ {% endblock content %}

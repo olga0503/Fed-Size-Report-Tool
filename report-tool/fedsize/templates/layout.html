@@ -24,6 +24,12 @@
     <script src="https://jfnafedlab.org/assets/js/smooth_scroll.js"></script>
     <script src="https://jfnafedlab.org/assets/js/roll_up.js"></script>
     <script src="https://jfnafedlab.org/assets/js/additional_js.js"></script>
+<script type = "text/javascript" >
+  function noBack(){
+window.history.forward();
+}</script>
+
+
 
   <style>
   
@@ -79,7 +85,7 @@
   .progress_bar.third a:hover .two,
   .progress_bar.second a:hover .one,
   .numberCircle{
-    border-radius: 50%;
+    border-radius: 25px;
     width: 36px;
     height: 36px;
     padding: 4px;
@@ -151,10 +157,16 @@
  .form-group .btn-blue-light{margin-bottom:30px;}
 
   select{border: 1px solid #ccc;
-
+        background-image: linear-gradient(45deg, transparent 50%, gray 50%), linear-gradient(135deg, gray 50%, transparent 50%), linear-gradient(to right, #ccc, #ccc);
+        background-position: calc(100% - 20px) calc(1em + 2px), calc(100% - 15px) calc(1em + 2px), calc(100% - 2.5em) 0.5em;
+        background-size: 5px 5px, 5px 5px, 1px 0em;
+        background-repeat: no-repeat;
         background:none;}
 
   .load_more{width:100px;}
+
+
+
 
 
   </style>
@@ -311,7 +323,7 @@ $(window).scroll(function() {
         <title>FedSize Report</title>
 
 </head>
-<body>
+<body onload="noBack();">
     <header>
     <div class="container">
       <div class="row">
