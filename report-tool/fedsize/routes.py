@@ -5,6 +5,7 @@ import numpy as np
 from datetime import datetime
 import time
 import xlrd
+import xlwt
 from fedsize import app, db, bcrypt
 from flask_bcrypt import Bcrypt
 from flask import render_template, url_for, flash, redirect, request, session, send_from_directory
@@ -22,7 +23,8 @@ UPLOAD_FOLDER = '/path/to/the/uploads'
 
 
 app.config['IMAGE_UPLOADS'] = "/report-tool/fedsize/uploads"
-    #"/Users/olyafomicheva/desktop/fedsize_report/fedsize/uploads"
+#"/Users/olyafomicheva/desktop/fedsize_report/fedsize/uploads"
+#"/report-tool/fedsize/uploads"
 app.config['FED_UPLOADS'] = "/report-tool/fedsize/federations"
 #"/Users/olyafomicheva/desktop/fedsize_report/fedsize/federations"
 app.config["ALLOWED_IMAGE_EXTENSIONS"] = ["CSV","XLS","XLSX"]
@@ -58,6 +60,12 @@ def allowed_image_filesize(filesize):
         return True
     else:
         return False
+
+
+def redirect_url(default='index'):
+    return request.args.get('next') or \
+           request.referrer or \
+           url_for(default)
 
 
 @app.route("/")
@@ -147,12 +155,16 @@ def uploader():
 
         return render_template("upload.html", filename = filename, columns = columns)
 
-    if request.method == "GET":
+    else :
 
         filename = session.get('filename')
         columns = session.get('file_columns')
 
         return render_template("upload.html", filename = filename, columns = columns)
+
+    #return redirect(redirect_url())
+
+
 
 
 @app.route("/add_fed_file", methods=["GET", "POST"])
@@ -220,7 +232,6 @@ def federation_by_size_all():
         columns = session.get('file_columns')
 
         feds = pd.read_csv(os.path.join(app.config["IMAGE_UPLOADS"], 'federations.csv'))
-        feds['City-Size'] = feds['City-Size'].replace(['1Large','3Inter','2LrgeInter','5SmallFed'],['Large','Intermidiate','Large Intermidiate','Small'])
 
         upl_file = pd.read_csv(path)   
 
@@ -232,28 +243,34 @@ def federation_by_size_all():
 
         report = upl_file.merge(feds, left_on=merge_field, right_on='Community', how='outer')
 
-        report['City-Size'].fillna('None',inplace=True)
+        if 'City-Size' in report.columns:
+            report['City-Size'].fillna('None',inplace=True)
+
         report = report.replace(np.nan, ' ', regex=True)
 
         cols = list(report)
 
-        if 'Federation Name ' in cols:
+        if merge_field in cols:
             # move the column to head of list using index, pop and insert
-            cols.insert(0, cols.pop(cols.index('Federation Name ')))
+            cols.insert(0, cols.pop(cols.index(merge_field)))
 
         if 'City-Size' in cols:
             cols.insert(1, cols.pop(cols.index('City-Size')))
         
         report=report[cols]
         report.to_csv(path, index=False)
-        
-        city_size_num = pd.DataFrame(report.groupby('City-Size')['First Name'].count()).reset_index()
+
+        if 'City-Size' in report.columns:
+            city_size_num = pd.DataFrame(report.groupby('City-Size')['First Name'].count()).reset_index()
 
 
-        city_size_num = city_size_num.reindex([1, 2, 0, 4, 3])
 
 
-        city_size_num.to_csv(os.path.join(app.config["IMAGE_UPLOADS"], 'city_size_num.csv'), index=False)
+
+            city_size_num.to_csv(os.path.join(app.config["IMAGE_UPLOADS"], 'city_size_num.csv'), index=False)
+
+        else:
+            city_size_num = pd.DataFrame()
         r=pd.read_csv(path) 
         
 
@@ -345,12 +362,29 @@ def download():
         m = pd.read_csv(filepath)
 
         report = m[m['City-Size']==s]
-        report.to_csv(os.path.join(app.config["IMAGE_UPLOADS"], filename.rsplit(".", 1)[0]+"_"+s+"_"+time.strftime("%B-%d-%H:%M:%S")+"."+filename.rsplit(".", 1)[1]), index=False)
+        report.to_excel(os.path.join(app.config["IMAGE_UPLOADS"], filename.rsplit(".", 1)[0]+"_"+s+"_"+time.strftime("%B-%d-%H:%M:%S")+".xls"), index=False, sheet_name='Sheet1')
 
-        return send_from_directory(app.config["IMAGE_UPLOADS"], filename = filename.rsplit(".", 1)[0] + "_" + s + "_" + time.strftime("%B-%d-%H:%M:%S")+"."+filename.rsplit(".", 1)[1], as_attachment=True)
+        return send_from_directory(app.config["IMAGE_UPLOADS"], filename = filename.rsplit(".", 1)[0] + "_" + s + "_" + time.strftime("%B-%d-%H:%M:%S")+".xls", as_attachment=True)
         #return render_template("xxx.html",s=s)
-    
-             
+
+
+@app.route("/download_all", methods=["GET", "POST"])
+def download_all():
+    # if request.method == 'GET':
+
+    filename = session.get('filename')
+    filepath = session.get('file_path')
+
+    report = pd.read_csv(filepath)
+
+    report.to_excel(os.path.join(app.config["IMAGE_UPLOADS"],
+                                 filename.rsplit(".", 1)[0] + "_all_" + time.strftime("%B-%d-%H:%M:%S") + ".xls"),
+                    index=False, sheet_name='Sheet1')
+
+    return send_from_directory(app.config["IMAGE_UPLOADS"],
+                               filename=filename.rsplit(".", 1)[0] + "_all_" + time.strftime(
+                                   "%B-%d-%H:%M:%S") + ".xls", as_attachment=True)
+
 
 @app.route("/logout")
 def logout():
