@@ -5,24 +5,7 @@
     <div class="container">
        <div class="row">
          <div class="col">
-            
-            <div class="progress_bar">
-              <div class="numberCircle one">1</div>
-              <hr class="lineCircle">
-              <div class="numberCircle two">2</div>
-              <hr class="lineCircle">
-              <div class="numberCircle three">3</div>
-            </div>
-
-            <div class="progress_bar_bottom">
-              <div class="numberCircle">UPLOAD FILE</div>
-              <hr class="lineCircle">
-              <div class="numberCircle">VALIDATE</div>
-              <hr class="lineCircle">
-              <div class="numberCircle">ANALYZE/DOWNLOAD</div>
-            </div>
-
-
+            <div class="numberCircle">1</div>
             <h1>STEP 1: UPLOAD A REPORT</h1>
             <hr>
             <p>Please select a report from your computer that you would like to update with community city sizes. Please note that this application only analyzes the first sheet of a multi-sheet file and accepts the following file types: .xls, .xlsx, .csv</p>
@@ -30,13 +13,16 @@
            
 
 
-            <form id="upl_file" action = "{{ url_for('uploader') }}" method = "POST" enctype = "multipart/form-data" style="margin-top:20px;">
+            <form action = "http://localhost:5000/uploader" method = "POST" enctype = "multipart/form-data" style="margin-top:20px;">
 
-              <label for="file-upload3" class="btn btn-blue-light" style="display:table-cell;">
+              <label for="file-upload" class="btn btn-blue-light" style="display:table-cell;">
                      <i class="fa fa-cloud-upload"></i> Add File
               </label>
-
-               {% with messages = get_flashed_messages() %}
+              <input id="file-upload" name='file' type="file" style="display:none;" onchange="form.submit()">
+              
+               
+               <p>
+                {% with messages = get_flashed_messages() %}
                   {% if messages %}
                   <ul class=flashes>
                   {% for message in messages %}
@@ -45,10 +31,14 @@
                   </ul>
                   {% endif %}
                 {% endwith %}
+            </p>
 
-              <input id="file-upload3" name='file' type="file" style="display:none;" >
-
-
+                
+              
+            
+                
+            
+               
 
             </form>
 
@@ -60,14 +50,6 @@
           </div>
         </div>
       </div>
-
-    <style>
-
-    footer{position:fixed;
-           width:100%;
-           bottom:0;}
-
-    </style>
 
       
 {% endblock content %}
