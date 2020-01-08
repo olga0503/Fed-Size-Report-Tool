@@ -70,7 +70,7 @@
                 <div class="col-md-12">
                   <ul class="tabs">
                     
-                    <li class="fed_size active"><a href="/federation_by_size_all">All</a></li>
+                    <li class="fed_size_active"><a href="/federation_by_size_all">All<span>(</span><span>{{records_num}}</span><span>)</span></a></li>
 
                     {% for index, row in fed_sizes.iterrows() %}
 
@@ -125,6 +125,18 @@
 function preventBack(){window.history.forward();}
     setTimeout("preventBack()", 0);
     window.onunload=function(){null};
+
+
+
+    $(function(){
+
+
+
+
+
+    });
+
+
     </script>
 
 
