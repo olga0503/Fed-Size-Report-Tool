@@ -19,7 +19,7 @@ import time
 UPLOAD_FOLDER = '/path/to/the/uploads'
 
 app.config['IMAGE_UPLOADS'] ="/report-tool/fedsize/uploads"
-#"/Users/olyafomicheva/desktop/fedsize_report/fedsize/uploads"
+    #"/Users/olyafomicheva/desktop/fedsize_report/fedsize/uploads"
 # "/report-tool/fedsize/uploads"
 app.config['FED_UPLOADS'] = "/report-tool/fedsize/federations"
 # "/Users/olyafomicheva/desktop/fedsize_report/fedsize/federations"
@@ -185,7 +185,7 @@ def federation_by_size(size):
 
     m = pd.read_csv(path)
 
-
+    #if 'First Name' in city_size_num.columns:
     city_size_num = pd.DataFrame(m.groupby('City-Size')['First Name'].count()).reset_index()
 
     x = m.groupby('City-Size')
@@ -234,7 +234,7 @@ def federation_by_size_all():
         report = report[cols]
         report.to_csv(path, index=False)
 
-        if 'City-Size' in report.columns:
+        if ('City-Size' in report.columns) & ('First Name' in report.columns):
             city_size_num = pd.DataFrame(report.groupby('City-Size')['First Name'].count()).reset_index()
 
             city_size_num.to_csv(os.path.join(app.config["IMAGE_UPLOADS"], 'city_size_num.csv'), index=False)
