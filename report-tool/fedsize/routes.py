@@ -19,7 +19,7 @@ import time
 UPLOAD_FOLDER = '/path/to/the/uploads'
 
 app.config['IMAGE_UPLOADS'] ="/report-tool/fedsize/uploads"
-    #"/Users/olyafomicheva/desktop/fedsize_report/fedsize/uploads"
+#"/Users/olyafomicheva/desktop/fedsize_report/fedsize/uploads"
 # "/report-tool/fedsize/uploads"
 app.config['FED_UPLOADS'] = "/report-tool/fedsize/federations"
 # "/Users/olyafomicheva/desktop/fedsize_report/fedsize/federations"
@@ -337,13 +337,12 @@ def download_all():
     report = pd.read_csv(filepath)
 
     report.to_excel(os.path.join(app.config["IMAGE_UPLOADS"],
-                                 filename.rsplit(".", 1)[0] + "_all_" + time.strftime("%B-%d-%H:%M:%S") + ".xls"),
+                                 filename.rsplit(".", 1)[0]+"_"+time.strftime("%B-%d-%H:%M:%S") + ".xls"),
                     index=False, sheet_name='Sheet1')
 
     return send_from_directory(app.config["IMAGE_UPLOADS"],
-                               filename=filename.rsplit(".", 1)[0] + "_all_" + time.strftime(
+                               filename=filename.rsplit(".", 1)[0] + "_" + time.strftime(
                                    "%B-%d-%H:%M:%S") + ".xls", as_attachment=True)
-
 
 @app.route("/logout")
 def logout():
