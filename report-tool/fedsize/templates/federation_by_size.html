@@ -27,6 +27,7 @@
 
             <a class="go_back" href='/uploader'><i class="fa fa-arrow-left"></i> Go to Step 2</a>
             <h1>STEP 3: ANALYZE & DOWNLOAD REPORT</h1>
+
             <hr>
 
           
@@ -70,11 +71,11 @@
                 <div class="col-md-12">
                   <ul class="tabs">
                     
-                    <li class="fed_size active"><a href="/federation_by_size_all">All</a></li>
+                    <li class="fed_size active"><a href="/federation_by_size_all">All(</span><span>{{records_num}}</span><span>)</a></li>
 
                     {% for index, row in fed_sizes.iterrows() %}
 
-                    <li class="fed_size {{row['City-Size']}}"><a href="/federation_by_size/{{row['City-Size']}}">{{row['City-Size']}}<span>(</span><span>{{row['First Name']}}</span><span>)</span></a></li>
+                    <li class="fed_size" id="{{row['City-Size']}}"><a href="/federation_by_size/{{row['City-Size']}}">{{row['City-Size']}}<span>(</span><span>{{row['First Name']}}</span><span>)</span></a></li>
 
                     {% endfor %}
 
@@ -110,32 +111,25 @@
  
                         </div>
 
-                        
+                        <p style="margin-top:20px;"><a href="#" class="load_more btn btn-blue-light">Load more</a></p>
+
                 
                         
                     </div>
                   </div>
           </div>
 
-          <script>
-            
+ <script type="text/javascript">
 
-          $(function(){
+  var link = window.location.href.split("/");
+  var link = link[link.length - 1];
 
-    
+  //var link = link.concat('test');
 
-    
-    
-    
-    
+  var el = document.getElementById(link);
+  console.log(el);
+  el.className += "_active";
 
-
-   
-    
-
-   });
-
-
-          </script>
+  </script>
    
 {% endblock content %}

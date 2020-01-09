@@ -59,7 +59,7 @@
                     <button type="submit">Do</button>-->
 
                </form>
-              <a class="btn export-btn btn-grey download" onclick="window.location.href='{{ url_for('download') }}';" target="_blank"><i class="fa fa-cloud-download"></i> Export Report</a>
+              <a class="btn export-btn btn-grey download" onclick="window.location.href='{{ url_for('download_all') }}';" target="_blank"><i class="fa fa-cloud-download"></i> Export Report</a>
               <!--<a class="btn export-btn btn-grey download" onclick="window.location.href='{{ url_for('analysis') }}';" target="_blank" >Advanced Analysis</a>-->
               <a class="btn new-report btn-grey download" href="/" target="_blank"><i class="fa fa-cloud-upload"></i> New File</a>
                
@@ -70,7 +70,7 @@
                 <div class="col-md-12">
                   <ul class="tabs">
                     
-                    <li class="fed_size active"><a href="/federation_by_size_all">All</a></li>
+                    <li class="fed_size_active"><a href="/federation_by_size_all">All<span>(</span><span>{{records_num}}</span><span>)</span></a></li>
 
                     {% for index, row in fed_sizes.iterrows() %}
 
@@ -110,7 +110,7 @@
  
                         </div>
 
-                        <a href="#" class="load_more btn btn-blue-light">Load more</a>
+                        <p style="margin-top:20px;"><a href="#" class="load_more btn btn-blue-light">Load more</a></p>
 
                 
                         
@@ -118,25 +118,28 @@
                   </div>
           </div>
 
-          <script>
-            
 
-          $(function(){
 
-    
 
-    
-    
-    
-    
+<script>
+function preventBack(){window.history.forward();}
+    setTimeout("preventBack()", 0);
+    window.onunload=function(){null};
+
+
+
+    $(function(){
+
+
+
+
+
+    });
+
+
+    </script>
+
 
 
    
-    
-
-   });
-
-
-          </script>
-   
-{% endblock content %}
+ {% endblock content %}

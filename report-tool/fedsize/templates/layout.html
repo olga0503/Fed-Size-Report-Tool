@@ -24,6 +24,12 @@
     <script src="https://jfnafedlab.org/assets/js/smooth_scroll.js"></script>
     <script src="https://jfnafedlab.org/assets/js/roll_up.js"></script>
     <script src="https://jfnafedlab.org/assets/js/additional_js.js"></script>
+<script type = "text/javascript" >
+  function noBack(){
+window.history.forward();
+}</script>
+
+
 
   <style>
   
@@ -31,7 +37,7 @@
               color:#ffffff!important;}
 
   .fed_size a:hover{background: #e7ebef;
-                    color:#3d3d3d;}
+                    color:#3d3d3d!important;}
                     
   .result-table {margin-top: 0px;}
   .form-tabs {margin-bottom: 0px;}
@@ -49,7 +55,8 @@
           display: block;
           margin: 0 0 20px 0;}
 
-  .form-tabs .tabs li {max-width:20%;}       
+  .form-tabs .tabs li {max-width:20%;}
+  .form-tabs .tabs li a {font-weight:800;}
 
   table.dataframe, .dataframe th, .dataframe td {border: 1px solid #ccc!important;}
 
@@ -66,7 +73,9 @@
     margin-bottom: 30px;}
 
   .btn-blue-light {color: #ffffff!important;
-                   background-color: #78a7e1;} 
+                   background-color: #1d4f90;}
+
+  .btn-blue-light:hover {background-color: #6083b1;}
 
   .form-control #submit {min-width:auto;} 
 
@@ -79,7 +88,7 @@
   .progress_bar.third a:hover .two,
   .progress_bar.second a:hover .one,
   .numberCircle{
-    border-radius: 50%;
+    border-radius: 25px;
     width: 36px;
     height: 36px;
     padding: 4px;
@@ -132,13 +141,13 @@
   .container {width: 95%;
               margin: 0 auto;}
 
-  table tr { display: none; }
+
   table tr.active { display: table-row; }
 
   .load_more {display: table-cell;
               margin-top:20px;}
 
-  table{margin-bottom:20px;}
+
 
  .sticky-thead > table{border: none!important;}
 
@@ -152,10 +161,16 @@
 
   select{border: 1px solid #ccc;
 
-        background:none;}
+        background-color:#fff;}
 
   .load_more{width:100px;}
+  .btn{max-width:150px;}
 
+  .fed_size_active{background-color: #e7ebef!important;}
+  .fed_size_active > a{color: #333!important;}
+  .body-content {min-height: 1000px;}
+  .table-sticky table tr{display:none;}
+  .table-sticky table tr:nth-child(-n+101){display:table-row;}
 
   </style>
 
@@ -166,8 +181,30 @@
 
   $( document ).ready(function() {
 
-  var url = window.location.href;
-  //document.getElementById("url").innerHTML = url.substring(url.lastIndexOf('/')+1);
+  //var url = window.location.href;
+  //var link1 = window.location.href.split("/");
+  //var link = link1[link1.length - 1];
+  //var link = link2.concat("test");
+  //var element = document.getElementById("url")
+  //$('.'+link).addClass('active');
+
+    size_tr = $('.table-sticky table tr').size();
+    console.log(size_tr);
+    x=101;
+    $('table tr:lt('+x+')').show();
+    $('.load_more').click(function (e) {
+        e.preventDefault();
+        x= (x+100 <= size_tr) ? x+100 : size_tr;
+        $('.table-sticky table tr:lt('+x+')').show();
+
+        console.log(x, size_tr);
+        if  (size_tr==x) {
+
+            $('.load_more').hide();
+        }
+    });
+
+
 
   });
 
@@ -192,9 +229,18 @@ $(function(){
 
 
 
-  <script>
+  <script type="text/javascript">
 
-  var link = window.location.href
+  var link = window.location.href.split("/");
+  var link = link[link.length - 1];
+
+  //var link = link.concat('test');
+
+  var el = document.getElementById(link);
+ // console.log(el);
+  //el[0].className += "ttt";
+
+
 
   var i;
 
@@ -209,9 +255,11 @@ $(function(){
 
  $(function(){
 
+     $('#url').html(link);
+
     $('div').click(function() {
     var theClass = $(this).attr("class"); // "this" is the element clicked
-    $(theClass).prepandTo('.test');
+    //$(theClass).prepandTo('.test');
     
     
   });
@@ -226,23 +274,29 @@ $(function(){
 });
 
    
-   for (i = 0; i < 20; i++) {
-        $('table tr:nth-child('+i+')').addClass('active');
-      }
+  // for (i = 0; i < 5; i++) {
+      //  $('table tr:nth-child('+i+')').addClass('active');
+      //}
+ //$('table tr').filter(':lt(6)').addClass('active');
     
 
 
 
-    $('a.load_more').on('click', function(e) {
-      e.preventDefault();  
-      var $rows = $('table tr');
-      var lastActiveIndex = $rows.filter('.active:last').index();
-      $rows.filter(':lt(' + (lastActiveIndex + 20) + ')').addClass('active');
-    });
+    //$('a.load_more').on('click', function(e) {
+    //  e.preventDefault();
+    //  var $rows = $('table tr');
+    //  var lastActiveIndex = $rows.filter('.active:last').index();
+    //  console.log(lastActiveIndex);
+    //  $rows.filter(':lt(' + (lastActiveIndex + 6) + ')').addClass('active');
+   // });
+
+
+
+
 
     $('{% if current_user.is_authenticated %}<footer><div class="container"><div class="row"><div class="col-12"><div style="text-align: center;"><form id="add_fed" action="/add_fed_file" method="POST" enctype="multipart/form-data" style="margin-top:20px;"><label for="file-upload2" class="btn" style="display:table-cell;float:right;"><i class="fa fa-cloud-upload"></i> Add Federations</label><input id="file-upload2" name="file" type="file" style="display:none;" ><p></p></form></div></div></div></div></footer>{% endif %}').appendTo('body');
 
-    $(link).prependTo('#url');
+
 
 
 
@@ -277,7 +331,7 @@ $(window).scroll(function() {
        hH = $('sticky-wrap.table-sticky').outerHeight(),
        wH = $(window).height(),
        wS = $(this).scrollTop();
-    console.log((hT-wH) , wS);
+    //console.log((hT-wH) , wS);
   
  if (wS >= hT){
 
@@ -298,6 +352,11 @@ $(window).scroll(function() {
   
 });
 
+$(document).ready(function () {
+
+
+});
+
   </script>
 
   <style>
@@ -311,7 +370,7 @@ $(window).scroll(function() {
         <title>FedSize Report</title>
 
 </head>
-<body>
+<body onload="noBack();">
     <header>
     <div class="container">
       <div class="row">
