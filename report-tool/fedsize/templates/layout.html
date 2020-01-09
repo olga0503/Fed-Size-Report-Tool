@@ -24,12 +24,6 @@
     <script src="https://jfnafedlab.org/assets/js/smooth_scroll.js"></script>
     <script src="https://jfnafedlab.org/assets/js/roll_up.js"></script>
     <script src="https://jfnafedlab.org/assets/js/additional_js.js"></script>
-<script type = "text/javascript" >
-  function noBack(){
-window.history.forward();
-}</script>
-
-
 
   <style>
   
@@ -37,7 +31,7 @@ window.history.forward();
               color:#ffffff!important;}
 
   .fed_size a:hover{background: #e7ebef;
-                    color:#3d3d3d!important;}
+                    color:#3d3d3d;}
                     
   .result-table {margin-top: 0px;}
   .form-tabs {margin-bottom: 0px;}
@@ -55,8 +49,7 @@ window.history.forward();
           display: block;
           margin: 0 0 20px 0;}
 
-  .form-tabs .tabs li {max-width:20%;}
-  .form-tabs .tabs li a {font-weight:800;}
+  .form-tabs .tabs li {max-width:20%;}       
 
   table.dataframe, .dataframe th, .dataframe td {border: 1px solid #ccc!important;}
 
@@ -73,9 +66,7 @@ window.history.forward();
     margin-bottom: 30px;}
 
   .btn-blue-light {color: #ffffff!important;
-                   background-color: #1d4f90;}
-
-  .btn-blue-light:hover {background-color: #6083b1;}
+                   background-color: #78a7e1;} 
 
   .form-control #submit {min-width:auto;} 
 
@@ -84,140 +75,33 @@ window.history.forward();
 
   .go_back{color: #1d4f90!important;}
 
-  .progress_bar.third a:hover .one,
-  .progress_bar.third a:hover .two,
-  .progress_bar.second a:hover .one,
-  .numberCircle{
-    border-radius: 25px;
+  .numberCircle {
+    border-radius: 50%;
     width: 36px;
     height: 36px;
-    padding: 4px;
+    padding: 8px;
 
     background: #fff;
-    border: 2px solid #1d4f90;
+    border: 2px solid #666;
+    color: #666;
     text-align: center;
 
-    font-size: 16px;
-    display:inline-block;
-    font-weight: 600;
-    color:#1d4f90;}
+    font-size: 32px;}
 
-  hr {display:inline-block;
-     width:40%;}
-
-  .go_back {display: block;
-            padding-bottom:30px;}
-
-  .progress_bar hr {border: 0.5px solid #1d4f90;
-                    margin-top: 10px;
-                    margin-bottom: 5px;}
-
-  .progress_bar {width: 95%;
-                 margin: 0 auto;}
-
-  .sticky-thead tbody {opacity:0;}
-
-  .wrapper{padding-top:30px;}
-
-  .one, 
-  .second .two,
-  .third .two,
-  .third .three {background: #1d4f90;
-                color: #fff;}
-
-  .progress_bar_bottom {padding-bottom:30px;}
-
-  .progress_bar_bottom .numberCircle{width:auto;}
-  .progress_bar_bottom hr{width:33%;}
-
-
-  .progress_bar_bottom  .numberCircle{border: none;
-                                       color:#1d4f90;
-                                       border: none;
-                                       background: none;}
-
-  .progress_bar_bottom hr{border:none;}
-
-  .container {width: 95%;
-              margin: 0 auto;}
-
-
-  table tr.active { display: table-row; }
-
-  .load_more {display: table-cell;
-              margin-top:20px;}
-
-
-
- .sticky-thead > table{border: none!important;}
-
- .invalid-feedback span {color:red;}
-
- .form-control input:not(.checkbox-input):not(.radio-input):not([type=checkbox]):not(.select2-search__field) {
-    margin-bottom: 0px;}
-
- .password-section,
- .form-group .btn-blue-light{margin-bottom:30px;}
-
-  select{border: 1px solid #ccc;
-
-        background-color:#fff;}
-
-  .load_more{width:100px;}
-  .btn{max-width:150px;}
-
-  .fed_size_active{background-color: #e7ebef!important;}
-  .fed_size_active > a{color: #333!important;}
-  .body-content {min-height: 1000px;}
-  .table-sticky table tr{display:none;}
-  .table-sticky table tr:nth-child(-n+101){display:table-row;}
 
   </style>
 
 
 
   <script>
+    $( document ).ready(function() {
+  
 
-
-  $( document ).ready(function() {
-
-  //var url = window.location.href;
-  //var link1 = window.location.href.split("/");
-  //var link = link1[link1.length - 1];
-  //var link = link2.concat("test");
-  //var element = document.getElementById("url")
-  //$('.'+link).addClass('active');
-
-    size_tr = $('.table-sticky table tr').size();
-    console.log(size_tr);
-    x=101;
-    $('table tr:lt('+x+')').show();
-    $('.load_more').click(function (e) {
-        e.preventDefault();
-        x= (x+100 <= size_tr) ? x+100 : size_tr;
-        $('.table-sticky table tr:lt('+x+')').show();
-
-        console.log(x, size_tr);
-        if  (size_tr==x) {
-
-            $('.load_more').hide();
-        }
-    });
-
+  var url = window.location.href;
+  document.getElementById("url").innerHTML = url.substring(url.lastIndexOf('/')+1);
 
 
   });
-
-$(function(){
-
-    $('div').click(function() {
-    var theClass = $(this).attr("class"); // "this" is the element clicked
-    $(theClass).prependTo('.test');
-    
-  });
-
-    });
-
 
 
 
@@ -229,82 +113,14 @@ $(function(){
 
 
 
-  <script type="text/javascript">
-
-  var link = window.location.href.split("/");
-  var link = link[link.length - 1];
-
-  //var link = link.concat('test');
-
-  var el = document.getElementById(link);
- // console.log(el);
-  //el[0].className += "ttt";
+  <script>
 
 
 
-  var i;
 
-  function my_func(){
-      $('#add_fed').sumbit();
-  }
-
-  function my_func2(){
-      $('#upl_file').sumbit();
-  }
-          
+  var link = window.location.href
 
  $(function(){
-
-     $('#url').html(link);
-
-    $('div').click(function() {
-    var theClass = $(this).attr("class"); // "this" is the element clicked
-    //$(theClass).prepandTo('.test');
-    
-    
-  });
-
-    $("#file-upload3").on('change',function() {
-     $("#upl_file").submit();
-});
-
-
-    $("#file-upload2").on('change',function() {
-     $("#add_fed").submit();
-});
-
-   
-  // for (i = 0; i < 5; i++) {
-      //  $('table tr:nth-child('+i+')').addClass('active');
-      //}
- //$('table tr').filter(':lt(6)').addClass('active');
-    
-
-
-
-    //$('a.load_more').on('click', function(e) {
-    //  e.preventDefault();
-    //  var $rows = $('table tr');
-    //  var lastActiveIndex = $rows.filter('.active:last').index();
-    //  console.log(lastActiveIndex);
-    //  $rows.filter(':lt(' + (lastActiveIndex + 6) + ')').addClass('active');
-   // });
-
-
-
-
-
-    $('{% if current_user.is_authenticated %}<footer><div class="container"><div class="row"><div class="col-12"><div style="text-align: center;"><form id="add_fed" action="/add_fed_file" method="POST" enctype="multipart/form-data" style="margin-top:20px;"><label for="file-upload2" class="btn" style="display:table-cell;float:right;"><i class="fa fa-cloud-upload"></i> Add Federations</label><input id="file-upload2" name="file" type="file" style="display:none;" ><p></p></form></div></div></div></div></footer>{% endif %}').appendTo('body');
-
-
-
-
-
-
-    $('.sticky-wrap.table-sticky > table').clone().prependTo('.sticky-thead');
-    //$('.body > header > div > div > div > div > a.logo').clone().prependTo('.sticky-thead');
-
-
 
     var x='<select name="field">{% for col in columns %}<option value="{{col}}">{{col}}</option>{% endfor %}</select>'
     
@@ -314,13 +130,12 @@ $(function(){
       $(x).insertBefore('#more_fields');
 
     });
-  
-    
-});
-    
-    
 
-   
+
+   $('.sticky-wrap.table-sticky > table > thead').clone().prependTo('.sticky-thead > table');
+    $(link).prependTo('#url');
+
+   });
 
 
 
@@ -331,30 +146,14 @@ $(window).scroll(function() {
        hH = $('sticky-wrap.table-sticky').outerHeight(),
        wH = $(window).height(),
        wS = $(this).scrollTop();
-    //console.log((hT-wH) , wS);
+    console.log((hT-wH) , wS);
   
  if (wS >= hT){
 
-     $('.sticky-thead table').css('display','block');
-     $('.sticky-thead table').css('position','fixed');
-     $('.sticky-thead table').css('top','0');
+    $('.sticky-thead').css('position','fixed');
     
    }
-
-
- else if (wS < hT){
-
-     $('.sticky-thead table').css('display','none');
-
-   }
-
-
   
-});
-
-$(document).ready(function () {
-
-
 });
 
   </script>
@@ -366,11 +165,13 @@ $(document).ready(function () {
   </style>
   
 
-
-        <title>FedSize Report</title>
-
+    {% if title %}
+        <title>Flask Blog - {{ title }}</title>
+    {% else %}
+        <title>Flask Blog</title>
+    {% endif %}
 </head>
-<body onload="noBack();">
+<body>
     <header>
     <div class="container">
       <div class="row">
@@ -380,7 +181,7 @@ $(document).ready(function () {
             <div style="text-align: center;"><a class="logo" href="/">Fed Size Report</a>
                                         {% if current_user.is_authenticated %}
                                            
-                                           <a id="logout" class="nav-item nav-link" href="{{ url_for('logout') }}">Logout <i class="fa fa-sign-out"></i></a></div>
+                                           <a id="logout" class="nav-item nav-link" href="{{ url_for('logout') }}"><i class="fa fa-sign-out"></i> Logout</a></div>
 
                                         {% endif %}
             
@@ -413,7 +214,6 @@ $(document).ready(function () {
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     
-
     
 </body>
 </html>
