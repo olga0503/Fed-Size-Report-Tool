@@ -196,8 +196,12 @@ window.history.forward();
         e.preventDefault();
         x= (x+100 <= size_tr) ? x+100 : size_tr;
         $('.table-sticky table tr:lt('+x+')').show();
-        console.log('.table-sticky table tr:last');
-            //$('.load_more').hide();
+
+        console.log(x, size_tr);
+        if  (size_tr==x) {
+
+            $('.load_more').hide();
+        }
     });
 
 
