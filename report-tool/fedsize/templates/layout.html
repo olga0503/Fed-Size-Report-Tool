@@ -172,6 +172,9 @@ window.history.forward();
   .table-sticky table tr{display:none;}
   .table-sticky table tr:nth-child(-n+101){display:table-row;}
 
+  footer{padding-top:10px;
+         padding-bottom:30px;}
+
   </style>
 
 
@@ -189,6 +192,9 @@ window.history.forward();
   //$('.'+link).addClass('active');
 
     size_tr = $('.table-sticky table tr').size();
+    if (size_tr<101){
+        $('.load_more').hide();
+    }
     console.log(size_tr);
     x=101;
     $('table tr:lt('+x+')').show();
