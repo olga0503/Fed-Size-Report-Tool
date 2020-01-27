@@ -18,8 +18,12 @@ import time
 
 UPLOAD_FOLDER = '/path/to/the/uploads'
 
-app.config['IMAGE_UPLOADS'] ="/report-tool/fedsize/uploads"
+app.config['IMAGE_UPLOADS'] = "/report-tool/fedsize/uploads"
 #"/Users/olyafomicheva/desktop/fedsize_report/fedsize/uploads"
+app.config['IMAGE_UPLOADS_XLS'] = "/report-tool/fedsize/uploads/xls"
+#"/Users/olyafomicheva/desktop/fedsize_report/fedsize/uploads/xls"
+app.config['IMAGE_UPLOADS_SIZE'] = "/report-tool/fedsize/uploads/size"
+#"/Users/olyafomicheva/desktop/fedsize_report/fedsize/uploads/size"
 # "/report-tool/fedsize/uploads"
 app.config['FED_UPLOADS'] = "/report-tool/fedsize/federations"
 # "/Users/olyafomicheva/desktop/fedsize_report/fedsize/federations"
@@ -179,11 +183,18 @@ def federation_by_size(size):
     s = size
 
     session['s'] = s
+    filename = session.get('filename')
 
     path = session.get('file_path')
     bar_labels = session.get('bar_labels')
 
     m = pd.read_csv(path)
+
+
+    report = m[m['City-Size'] == s]
+    report.to_excel(os.path.join(app.config["IMAGE_UPLOADS_SIZE"],
+                                 filename.rsplit(".", 1)[0]+"_"+s+"_.xls"),
+                                 index=False, sheet_name='Sheet1')
 
     #if 'First Name' in city_size_num.columns:
     city_size_num = pd.DataFrame(m.groupby('City-Size')['First Name'].count()).reset_index()
@@ -213,9 +224,19 @@ def federation_by_size_all():
 
         merge_field = request.form.get('field')
         upl_file[merge_field] = upl_file[merge_field].str.title()
+        upl_file[merge_field] = upl_file[merge_field].str.replace('.','')
+        upl_file[merge_field] = upl_file[merge_field].str.replace(',','')
+
         feds['Community'] = feds['Community'].str.title()
 
+
         report = upl_file.merge(feds, left_on=merge_field, right_on='Community', how='left')
+        report.to_excel(os.path.join(app.config["IMAGE_UPLOADS_XLS"],filename),
+                        index=False, sheet_name='Sheet1')
+
+
+
+
 
         if 'City-Size' in report.columns:
             report['City-Size'].fillna('None', inplace=True)
@@ -316,14 +337,14 @@ def download():
     x = session.get('x')
     m = pd.read_csv(filepath)
 
-    report = m[m['City-Size'] == s]
-    report.to_excel(os.path.join(app.config["IMAGE_UPLOADS"],
-                                 filename.rsplit(".", 1)[0] + "_" + s + "_" + time.strftime("%B-%d-%H:%M:%S") + ".xls"),
-                    index=False, sheet_name='Sheet1')
+    #report = m[m['City-Size'] == s]
+    #report.to_excel(os.path.join(app.config["IMAGE_UPLOADS_XLS"], filename+s),
+           #         index=False, sheet_name='Sheet1')
 
-    return send_from_directory(app.config["IMAGE_UPLOADS"],
-                               filename=filename.rsplit(".", 1)[0] + "_" + s + "_" + time.strftime(
-                                   "%B-%d-%H:%M:%S") + ".xls", as_attachment=True)
+    return send_from_directory(app.config["IMAGE_UPLOADS_SIZE"], filename=filename.rsplit(".", 1)[0]+"_"+s+"_.xls",
+                               attachment_filename=filename.rsplit(".", 1)[0] + "_" + s + "_" + time.strftime(
+                                   "%B-%d-%H:%M:%S") + ".xls",
+                               as_attachment=True)
     # return render_template("xxx.html",s=s)
 
 
@@ -331,18 +352,18 @@ def download():
 def download_all():
     # if request.method == 'GET':
 
-    filename = session.get('filename')
+    filename_x = session.get('filename')
     filepath = session.get('file_path')
 
-    report = pd.read_csv(filepath)
+    #report = pd.read_csv(filepath)
 
-    report.to_excel(os.path.join(app.config["IMAGE_UPLOADS"],
-                                 filename.rsplit(".", 1)[0]+"_"+time.strftime("%B-%d-%H:%M:%S") + ".xls"),
-                    index=False, sheet_name='Sheet1')
+    #report.to_excel(os.path.join(app.config["IMAGE_UPLOADS"],
+                             #    filename.rsplit(".", 1)[0]+"_"+time.strftime("%B-%d-%H:%M:%S") + ".xls"),
+                   # index=False, sheet_name='Sheet1')
 
-    return send_from_directory(app.config["IMAGE_UPLOADS"],
-                               filename=filename.rsplit(".", 1)[0] + "_" + time.strftime(
-                                   "%B-%d-%H:%M:%S") + ".xls", as_attachment=True)
+    return send_from_directory(app.config["IMAGE_UPLOADS_XLS"],
+                               filename=filename_x,
+                               attachment_filename=filename_x.rsplit(".", 1)[0]+"_" + time.strftime("%B-%d-%H:%M:%S") + "." + filename_x.rsplit(".", 1)[1], as_attachment=True)
 
 @app.route("/logout")
 def logout():
