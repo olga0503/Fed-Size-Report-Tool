@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 from datetime import datetime
-import time, xlrd, xlwt, os, time, requests
+import time, xlrd, xlwt, os, time
 from fedsize import app, db, bcrypt
 from flask_bcrypt import Bcrypt
 from flask import render_template, url_for, flash, redirect, request, session, send_from_directory
