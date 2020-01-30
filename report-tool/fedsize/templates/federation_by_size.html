@@ -75,7 +75,7 @@
 
                     {% for index, row in fed_sizes.iterrows() %}
 
-                    <li class="fed_size" id="{{row['City-Size']}}"><a href="/federation_by_size/{{row['City-Size']}}">{{row['City-Size']}}<span>(</span><span>{{row['First Name']}}</span><span>)</span></a></li>
+                    <li class="fed_size" id="{{row['City-Size']}}"><a href="/federation_by_size/{{row['City-Size']}}">{{row['City-Size']}}<span>(</span><span>{{row['counts']}}</span><span>)</span></a></li>
 
                     {% endfor %}
 
