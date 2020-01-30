@@ -294,6 +294,8 @@ def federation_by_size_all():
             report = report[cols]
             report.to_excel(path, index=False)
 
+            city_size_num = pd.DataFrame(report.groupby('City-Size').size().reset_index(name="counts"))
+
             path_city_size_num = os.path.join(app.config["UPLOADS"], "city_size_num_" + time.strftime("%B-%d-%H-%M-%S") + ".csv")
             session["path_city_size_num"] = path_city_size_num
 
