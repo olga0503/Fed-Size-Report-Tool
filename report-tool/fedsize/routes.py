@@ -294,10 +294,11 @@ def federation_by_size_all():
             report = report[cols]
             report.to_excel(path, index=False)
 
-            city_size_num = pd.DataFrame(report.groupby('City-Size').size().reset_index(name="counts"))
+            path_city_size_num = os.path.join(app.config["UPLOADS"], "city_size_num_" + time.strftime("%B-%d-%H-%M-%S") + ".csv")
+            session["path_city_size_num"] = path_city_size_num
 
-            city_size_num.to_csv(os.path.join(app.config["UPLOADS"], "city_size_num_" + time.strftime("%B-%d-%H:%M:%S") + ".csv"), index=False)
-
+            city_size_num.to_csv(path_city_size_num, index=False)
+            
         else:
             city_size_num = pd.DataFrame()
 
@@ -314,8 +315,8 @@ def federation_by_size_all():
         columns = session.get('file_columns')
 
         report = pd.read_excel(path, index=False)
-        city_size_num = pd.read_csv(os.path.join(app.config["UPLOADS"], "city_size_num_" + time.strftime("%B-%d-%H:%M:%S") + ".csv"))
-
+        city_size_num = pd.read_csv(session.get("path_city_size_num"))
+        
         return render_template("federation_by_size_all.html",
                                tables=[report.to_html(classes='table-sticky sticky-enabled', index=False)],
                                fed_sizes=city_size_num, columns=columns, filename=filename,
