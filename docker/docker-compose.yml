@@ -25,5 +25,7 @@ services:
              - mysql
         ports:
              - "80:5000"
+        volumes:
+           - ~/utils:/utils
 
 
