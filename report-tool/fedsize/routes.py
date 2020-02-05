@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 from datetime import datetime
-import time, xlrd, xlwt, os, time
+import time, xlrd, xlwt, os, time, requests
 from fedsize import app, db, bcrypt
 from flask_bcrypt import Bcrypt
 from flask import render_template, url_for, flash, redirect, request, session, send_from_directory
@@ -14,7 +14,7 @@ from werkzeug.utils import secure_filename
 
 #UPLOAD_FOLDER = '/path/to/the/uploads'
 
-app.config['UPLOADS'] = "/report-tool/fedsize/uploads"
+app.config['UPLOADS'] =  "/report-tool/fedsize/uploads"
 #"/Users/olyafomicheva/desktop/fedsize_report/fedsize/uploads"
 
 app.config['UPLOADS_XLS'] = "/report-tool/fedsize/uploads/xls"
@@ -164,15 +164,16 @@ def uploader():
             # return send_from_directory('/Users/FOMIOLNY/desktop/flask_test/uploads', filename='xxx.csv', as_attachment=True)
             # return render_template("xx.html",title='ccc', labels=bar_labels, values=bar_values, max=100)
 
-        return render_template("upload.html", filename=org_filename, columns=columns)
+        return render_template("upload.html", org_filename=org_filename, filename=filename, columns=columns)
 
     else:
 
         #read filename and file columns names
         filename = session.get('filename')
+        org_filename = session.get('org_filename')
         columns = session.get('file_columns')
 
-        return render_template("upload.html", filename=org_filename, columns=columns)
+        return render_template("upload.html", org_filename=org_filename, filename=filename, columns=columns)
 
 
 
@@ -184,8 +185,9 @@ def add_fed_file():
     federations = list(set(feds['Federation Name']))
     size_types = list(set(feds['City-Size']))
 
-
-
+    # replace NaNs communities with 'None'
+    if 'Notes' in feds.columns:
+        feds['Notes'].fillna('', inplace=True)
 
     return render_template("_test.html", tables=[feds.to_html(classes='table-sticky sticky-enabled', index=False)],
                            federations=federations, size_types=size_types)
@@ -195,10 +197,44 @@ def add_fed_file():
 def add_fed_file2():
     feds = pd.read_csv(os.path.join(app.config["UPLOADS"], 'federations.csv'))
 
-    data = request.form["emailx"]
-    return render_template("_test.html", tables=[feds.to_html(classes='table-sticky sticky-enabled', index=False)],
-                           data=data)
+    c_data = request.form.getlist("community")
+    fedsize_data = request.form.getlist("fedsize")
+    f_data = request.form.getlist("federation")
+    n_data = request.form.getlist("note")
 
+    new_record = pd.DataFrame({feds.columns[0]:c_data, feds.columns[1]:fedsize_data, feds.columns[2]:f_data, feds.columns[3]:n_data})
+    new_record[feds.columns[0]] = new_record[feds.columns[0]].str.title()
+
+    for index, row in new_record.iterrows():
+        if row[feds.columns[0]] in list(feds[feds.columns[0]]):
+            feds.drop(feds[feds[feds.columns[0]] == row[feds.columns[0]]].index, inplace=True)
+
+    feds = feds.append(new_record)
+    feds.sort_values(feds.columns[0], ascending=True, inplace=True)
+
+
+    feds.to_csv(os.path.join(app.config["UPLOADS"], 'federations.csv'), index=False)
+    return redirect(url_for('add_fed_file'))
+
+    #return render_template("_test.html", tables=[feds.to_html(classes='table-sticky sticky-enabled', index=False)],
+                           #data=c_data, data2=fedsize_data,data3=f_data, data4=n_data)
+
+
+@app.route("/add_fed_file3", methods=["GET", "POST"])
+def add_fed_file3():
+    feds = pd.read_csv(os.path.join(app.config["UPLOADS"], 'federations.csv'))
+
+    f_data = request.form.get("federation")
+    fedsize_data = request.form.get("fedsize")
+
+    feds.loc[feds['Federation Name']==f_data, 'City-Size'] = fedsize_data
+
+
+    feds.sort_values(feds.columns[0], ascending=True, inplace=True)
+
+
+    feds.to_csv(os.path.join(app.config["UPLOADS"], 'federations.csv'), index=False)
+    return redirect(url_for('add_fed_file'))
 
 @app.route('/federation_by_size/<string:size>', methods=["GET", "POST"])
 def federation_by_size(size):
@@ -248,6 +284,9 @@ def federation_by_size_all():
 
         #read uploaded file
         upl_file = pd.read_excel(path, sheet_name = 0)
+
+        if 'City-Size' in upl_file.columns:
+            upl_file.drop('City-Size', axis=1, inplace=True)
 
 
 
@@ -300,7 +339,7 @@ def federation_by_size_all():
             session["path_city_size_num"] = path_city_size_num
 
             city_size_num.to_csv(path_city_size_num, index=False)
-            
+
         else:
             city_size_num = pd.DataFrame()
 
@@ -318,7 +357,7 @@ def federation_by_size_all():
 
         report = pd.read_excel(path, index=False)
         city_size_num = pd.read_csv(session.get("path_city_size_num"))
-        
+
         return render_template("federation_by_size_all.html",
                                tables=[report.to_html(classes='table-sticky sticky-enabled', index=False)],
                                fed_sizes=city_size_num, columns=columns, filename=filename,
@@ -403,9 +442,63 @@ def logout():
     return redirect(url_for('home'))
 
 
-@app.route("/about")
-def about():
-    return render_template('about.html', title='About')
+@app.route("/uploader_fed", methods=["GET", "POST"])
+#function that allows user to upload file to the system
+def uploader_fed():
+    if request.method == "POST":
+
+        if request.files:
+
+            file = request.files["file"]
+
+            #verifies that filename is not blank
+            if file.filename == '':
+                    flash('No file selected or uploading')
+                    return redirect('/add_fed_file')
+
+            #verifies file type
+            if not allowed_file(file.filename):
+                    flash('Unsupported file type')
+                    return redirect('/add_fed_file')
+
+
+            fed_filename = secure_filename(file.filename)
+
+            path = os.path.join(app.config["UPLOADS"], fed_filename)
+
+            #saves file
+            file.save(path)
+
+
+            #verifies csv format
+            if not check_csv(fed_filename):
+                try:
+                    #read excel file
+                    upl_file = pd.read_excel(path, sheet_name = 0)
+
+
+                except:
+                    flash('Unsupported file type')
+                    return redirect('/add_fed_file')
+
+            else:
+                try:
+                    #read csv
+                    upl_file = pd.read_csv(path)
+
+                except:
+                    flash('Unsupported file type')
+                    return redirect('/add_fed_file')
+
+            # read federations file
+            feds = pd.read_csv(os.path.join(app.config["UPLOADS"], 'federations.csv'))
+
+            if set(upl_file.columns)==set(feds.columns):
+                feds=feds.append(upl_file)
+                feds.to_csv(os.path.join(app.config["UPLOADS"], 'federations.csv'), index=False)
+
+        return redirect('/add_fed_file')
+
 
 
 @app.route("/reset_password", methods=['GET', 'POST'])
