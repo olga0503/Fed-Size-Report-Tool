@@ -28,7 +28,7 @@
             <hr>
 
             
-            <p>You have successfully uploaded the following file:  <b>{{filename}} </b><a href="/"><i class="fa fa-times-circle" style="color: #78a7e1;"></i></a></p>
+            <p>You have successfully uploaded the following file:  <b>{{org_filename}} </b><a href="/"><i class="fa fa-times-circle" style="color: #78a7e1;"></i></a></p>
             <p>&nbsp;</p>
             <p>Please select the title of the column where the list of Communities appears in your report. This application will add the related city size in an additional column to the right of community column.</p>
 
@@ -38,7 +38,7 @@
 
 
                     
-                    <select name="field">
+                    <select name="field" required="">
                       <option value="" disabled selected>Select Column</option>
                       {% for col in columns %} 
                           <option value="{{col}}">{{col}}</option>
@@ -49,7 +49,7 @@
 
                     <button type="submit" class="btn btn-blue-light" style="display:inline-block;">Submit</button>
 
-               </form>
+            </form>
 
               
                 

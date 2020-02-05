@@ -9,21 +9,23 @@
     
 
     <!--<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">-->
-    
-    <link rel="stylesheet" href="https://jfnafedlab.org/assets/css/vendors-crm.min.css?v=201710261156">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://jfnafedlab.org/assets/css/vendors-crm.min.css">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.min.css') }}">
     <script src="https://browser.sentry-cdn.com/4.0.6/bundle.min.js" crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
    
 
-    <script src="https://fedweb-assets.s3.amazonaws.com/fed-42/1484/jquery.lettering.js"></script>
+
     <script src="{{ url_for('static', filename='main.js') }}"></script>
     <script src="https://jfnafedlab.org/assets/js/vendors.min.js"></script>
     <script src="https://jfnafedlab.org/assets/js/common.min.js"></script>
     <script src="https://jfnafedlab.org/assets/js/smooth_scroll.js"></script>
     <script src="https://jfnafedlab.org/assets/js/roll_up.js"></script>
     <script src="https://jfnafedlab.org/assets/js/additional_js.js"></script>
+
+
 <script type = "text/javascript" >
   function noBack(){
 window.history.forward();
@@ -164,7 +166,7 @@ window.history.forward();
         background-color:#fff;}
 
   .load_more{width:100px;}
-  .btn{max-width:150px;}
+  .btn{max-width:250px;}
 
   .fed_size_active{background-color: #e7ebef!important;}
   .fed_size_active > a{color: #333!important;}
@@ -172,8 +174,42 @@ window.history.forward();
   .table-sticky table tr{display:none;}
   .table-sticky table tr:nth-child(-n+101){display:table-row;}
 
-  footer{padding-top:10px;
-         padding-bottom:30px;}
+  footer {padding-top:10px;
+          padding-bottom:30px;}
+
+  label {display: block;
+         margin-bottom: 5px;}
+
+  .inline {display:inline-block;}
+  .w-90 {width:90%;}
+
+  .add-fed{margin-left: 0px;margin-right: 0px;}
+  .add-fed .col-md-3 {padding:0;}
+
+  .add-fed input{border: 1px solid #e7ebef;
+                 color: #707070;
+                 height:40px;
+                 font-size: 14px;
+                 font-size: 1.4rem;
+                 outline: none;
+                 padding-left: 15px;}
+
+  .add-fed input{margin:0!important;}
+
+  .remove-fed,
+  .another-fed {border-radius: 30px;
+                padding: 2px 3px;
+                border: 2px solid #1d4f90;
+                color: #fff;
+                background: #1d4f90;
+                margin-top: 11px;
+                font-size: 1rem;}
+
+  .remove-fed:hover,
+  .another-fed:hover {border: 2px solid #6083b1;
+                      background: #6083b1;}
+  #add-community,
+  #change-size{display:none;}
 
   </style>
 
@@ -214,7 +250,74 @@ window.history.forward();
 
   });
 
+
 $(function(){
+
+    $('#clear').click(function() {
+
+        $('#add-community').hide();
+
+
+    });
+
+    $('#clear-size').click(function() {
+
+        $('#change-size').hide();
+
+    });
+
+
+    $('.another-fed').click(function(){
+
+
+        $('<div class="add-fed row">\n' +
+            '                             <div class="col-md-3">\n' +
+            '                                <label class="form-control-label" for="email">Community</label>\n' +
+            '                                <input class="form-control form-control-lg inline w-90" id="community" name="community" required="" type="text" value="">\n' +
+            '                             </div>\n' +
+            '\n' +
+            '                             <div class="col-md-3">\n' +
+            '                                <label class="form-control-label">City Size</label>\n' +
+            '                                <select name="fedsize" class="inline w-90">\n' +
+            '                                  <option value="" disabled selected>Select Federation Size</option>\n' +
+            '                                  {% for size_type in size_types %}\n'+
+                '                                      <option value="{{size_type}}">{{size_type}}</option>\n'+
+                '                                  {% endfor %}\n' +
+            '                                </select>\n' +
+            '                             </div>\n' +
+            '\n' +
+            '                             <div class="col-md-3">\n' +
+            '                                 <label class="form-control-label">Federation Name</label>\n' +
+            '                                 <select name="federation" class="inline w-90">\n' +
+            '                                  <option value="" disabled selected>Select Federation</option>\n' +
+            '                                  {% for federation in federations %}\n'+
+                '                                      <option value="{{federation}}">{{federation}}</option>\n'+
+                '                                  {% endfor %}\n' +
+            '                                </select>\n' +
+            '                             </div>\n' +
+            '\n' +
+            '                             <div class="col-md-3">\n' +
+            '                                 <label class="form-control-label">Notes</label>\n' +
+            '                                 <input class="form-control form-control-lg inline w-90" id="note" name="note" type="text" value="">\n' +
+            '                                 <i class="fa fa-minus remove-fed" style="float:right;" onclick="removeFed()"></i>\n' +
+            '                             </div>\n' +
+            '                        </div>').insertBefore('#add-community .buttons');
+
+        $('.add-fed:last-child .another-fed').addClass('fa-minus');
+     });
+
+
+    $('.btn-add-community').click(function(){
+        $('#add-community').show();
+        $('#change-size').hide();
+     });
+
+
+    $('.btn-change-size').click(function(){
+        $('#change-size').show();
+        $('#add-community').hide();
+    });
+
 
     $('div').click(function() {
     var theClass = $(this).attr("class"); // "this" is the element clicked
@@ -222,8 +325,18 @@ $(function(){
     
   });
 
+
+
+
     });
 
+
+function removeFed() {
+
+
+         $(event.target).parent().parent().remove();
+
+  };
 
 
 
@@ -300,7 +413,7 @@ $(function(){
 
 
 
-    $('{% if current_user.is_authenticated %}<footer><div class="container"><div class="row"><div class="col-12"><div style="text-align: center;"><a id="add_fed" href="/add_fed_file" style="margin-top:20px;"><label for="file-upload2" class="btn" style="display:table-cell;float:right;"><i class="fa fa-cloud-upload"></i> Add Federations</label><input id="file-upload2" name="file" type="file" style="display:none;" ><p></p></form></div></div></div></div></footer>{% endif %}').appendTo('body');
+    $('{% if current_user.is_authenticated %}<footer><div class="container"><div class="row"><div class="col-12"><div style="text-align: center;"><a id="add_fed" href="/add_fed_file" style="margin-top:20px;" target="_blank"><label for="file-upload2" class="btn" style="display:table-cell;float:right;"><i class="fa fa-cloud-upload"></i> Add Communities</label></form></div></div></div></div></footer>{% endif %}').appendTo('body');
 
 
 

@@ -8,31 +8,169 @@
               
 
       <div class="form-tabs">
+
+
               <div class="row">
                 <div class="col-md-12">
-                  <form method="POST" action="/add_fed_file2">
-                        <label class="form-control-label" for="email">Email</label>
-                        <input class="form-control form-control-lg" id="emailx" name="emailx" required="" type="text" value="">
-
-                        <select name="size_type">
-                          <option value="" disabled selected>Select Federation Size</option>
-                          {% for size_type in size_types %}
-                              <option value="{{size_type}}">{{size_type}}</option>
+                    <!--<form id="upl_file" action="/uploader_fed" method="POST" enctype="multipart/form-data" style="display:inline-block;padding-right:15px;">
+                      <label for="file-upload3" class="btn btn-grey">
+                             <i class="fa fa-cloud-upload"></i> Import Communities
+                      </label>
+                      <input id="file-upload3" name="file" type="file" style="display:none;">
+                        {% with messages = get_flashed_messages() %}
+                          {% if messages %}
+                          <ul class=flashes>
+                          {% for message in messages %}
+                            <li style="color:red;">{{ message }}</li>
                           {% endfor %}
-                        </select>
+                          </ul>
+                          {% endif %}
+                        {% endwith %}
 
-                         <select name="federation">
-                          <option value="" disabled selected>Select Federation</option>
-                          {% for federation in federations %}
-                              <option value="{{federation}}">{{federation}}</option>
-                          {% endfor %}
-                        </select>
+                     </form>-->
+
+                    <a class="btn export-btn btn-grey download inline btn-add-community" target="_blank" style="margin-bottom:40px;"><i class="fa fa-plus"></i> Add Community</a>
+                    <a class="btn export-btn btn-grey download inline btn-change-size" target="_blank" style="margin-bottom:40px;"><i class="fa fa-edit"></i> Change Fed Size</a>
 
 
-                             {%if data%}
 
-                                {{ data }}
-                             {% endif%}
+                    <form method="POST" action="/add_fed_file2" id="add-community">
+                        <div class="add-fed row">
+                             <div class="col-md-3">
+                                <label class="form-control-label" for="email">Community</label>
+                                <input class="form-control form-control-lg inline w-90" id="community" name="community" required="" type="text" value="">
+                                {% with messages = get_flashed_messages() %}
+                                  {% if messages %}
+                                  <ul class=flashes>
+                                  {% for message in messages %}
+                                    <li style="color:red;">{{ message }}</li>
+                                  {% endfor %}
+                                  </ul>
+                                  {% endif %}
+                                {% endwith %}
+                             </div>
+
+                             <div class="col-md-3">
+                                <label class="form-control-label">City Size</label>
+                                <select name="fedsize" class="inline w-90" required="">
+                                  <option value="" disabled selected>Select Federation Size</option>
+                                  {% for size_type in size_types %}
+                                      <option value="{{size_type}}">{{size_type}}</option>
+                                  {% endfor %}
+                                </select>
+                                {% with messages = get_flashed_messages() %}
+                                  {% if messages %}
+                                  <ul class=flashes>
+                                  {% for message in messages %}
+                                    <li style="color:red;">{{ message }}</li>
+                                  {% endfor %}
+                                  </ul>
+                                  {% endif %}
+                                {% endwith %}
+                             </div>
+
+                             <div class="col-md-3">
+                                 <label class="form-control-label">Federation Name</label>
+                                 <select name="federation" class="inline w-90" required="">
+                                  <option value="" disabled selected>Select Federation</option>
+                                  {% for federation in federations %}
+                                      <option value="{{federation}}">{{federation}}</option>
+                                  {% endfor %}
+                                </select>
+                                {% with messages = get_flashed_messages() %}
+                                  {% if messages %}
+                                  <ul class=flashes>
+                                  {% for message in messages %}
+                                    <li style="color:red;">{{ message }}</li>
+                                  {% endfor %}
+                                  </ul>
+                                  {% endif %}
+                                {% endwith %}
+                             </div>
+
+                             <div class="col-md-3">
+                                 <label class="form-control-label">Notes</label>
+                                 <input class="form-control form-control-lg inline w-90" id="note" name="note" type="text" value="">
+                                 <i class="fa fa-plus another-fed" style="float:right;"></i>
+                                 {% with messages = get_flashed_messages() %}
+                                  {% if messages %}
+                                  <ul class=flashes>
+                                  {% for message in messages %}
+                                    <li style="color:red;">{{ message }}</li>
+                                  {% endfor %}
+                                  </ul>
+                                  {% endif %}
+                                {% endwith %}
+                             </div>
+                        </div>
+
+
+                        <div class="buttons" style="text-align:right;">
+                        <button id="clear" class="btn btn-blue-light inline"
+                                style="margin:20px 15px 0 20px;">Clear</button>
+
+                        <button type="submit" class="btn btn-blue-light inline"
+                                style="margin:20px 0;">Submit</button>
+                        </div>
+
+
+
+                  </form>
+
+                  <form method="POST" action="/add_fed_file3" id="change-size">
+                        <div class="change-size row">
+
+
+                             <div class="col-md-4">
+                                 <label class="form-control-label">Federation Name</label>
+                                 <select name="federation" class="inline w-90" required="">
+                                  <option value="" disabled selected>Select Federation</option>
+                                  {% for federation in federations %}
+                                      <option value="{{federation}}">{{federation}}</option>
+                                  {% endfor %}
+                                </select>
+                                {% with messages = get_flashed_messages() %}
+                                  {% if messages %}
+                                  <ul class=flashes>
+                                  {% for message in messages %}
+                                    <li style="color:red;">{{ message }}</li>
+                                  {% endfor %}
+                                  </ul>
+                                  {% endif %}
+                                {% endwith %}
+                             </div>
+
+                             <div class="col-md-4">
+                                <label class="form-control-label">City Size</label>
+                                <select name="fedsize" class="inline w-90" required="">
+                                  <option value="" disabled selected>Select Federation Size</option>
+                                  {% for size_type in size_types %}
+                                      <option value="{{size_type}}">{{size_type}}</option>
+                                  {% endfor %}
+                                </select>
+                                {% with messages = get_flashed_messages() %}
+                                  {% if messages %}
+                                  <ul class=flashes>
+                                  {% for message in messages %}
+                                    <li style="color:red;">{{ message }}</li>
+                                  {% endfor %}
+                                  </ul>
+                                  {% endif %}
+                                {% endwith %}
+                             </div>
+
+                             <div class="col-md-4">
+                                  <div class="buttons" style="text-align:right;">
+                                    <button id="clear-size" class="btn btn-blue-light inline"
+                                            style="margin:20px 15px 0 20px;">Clear</button>
+
+                                    <button type="submit" class="btn btn-blue-light inline"
+                                            style="margin:20px 0;">Submit</button>
+                                  </div>
+                             </div>
+                        </div>
+
+
                   </form>
                 </div>
               </div>
@@ -52,6 +190,7 @@
                             {% endfor %}
                          
                         </div>
+                    <p style="margin-top:20px;"><a href="#" class="load_more btn btn-blue-light">Load more</a></p>
                     </div>
                   </div>
           </div>
