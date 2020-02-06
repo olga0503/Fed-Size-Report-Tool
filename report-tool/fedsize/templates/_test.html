@@ -31,6 +31,10 @@
 
                     <a class="btn export-btn btn-grey download inline btn-add-community" target="_blank" style="margin-bottom:40px;"><i class="fa fa-plus"></i> Add Community</a>
                     <a class="btn export-btn btn-grey download inline btn-change-size" target="_blank" style="margin-bottom:40px;"><i class="fa fa-edit"></i> Change Fed Size</a>
+                    <div class="popup" id="myPopup">
+                        <p>Are you sure you wish to delete community <span id="com-name"></span>?</p>
+                        <button class="btn btn-grey inline" id="cancel-delete">Cancel</button>
+                    </div>
 
 
 
@@ -106,7 +110,7 @@
 
 
                         <div class="buttons" style="text-align:right;">
-                        <button id="clear" class="btn btn-blue-light inline"
+                        <button id="clear" class="btn btn-grey inline"
                                 style="margin:20px 15px 0 20px;">Clear</button>
 
                         <button type="submit" class="btn btn-blue-light inline"
@@ -116,6 +120,8 @@
 
 
                   </form>
+
+
 
                   <form method="POST" action="/add_fed_file3" id="change-size">
                         <div class="change-size row">
@@ -161,7 +167,7 @@
 
                              <div class="col-md-4">
                                   <div class="buttons" style="text-align:right;">
-                                    <button id="clear-size" class="btn btn-blue-light inline"
+                                    <button id="clear-size" class="btn btn-grey inline"
                                             style="margin:20px 15px 0 20px;">Clear</button>
 
                                     <button type="submit" class="btn btn-blue-light inline"
