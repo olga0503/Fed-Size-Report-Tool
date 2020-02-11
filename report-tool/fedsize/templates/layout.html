@@ -86,18 +86,22 @@ window.history.forward();
 
   .go_back{color: #1d4f90!important;}
 
+
   .progress_bar.third a:hover .one,
   .progress_bar.third a:hover .two,
   .progress_bar.second a:hover .one,
   .numberCircle{
     border-radius: 25px;
+
     width: 36px;
     height: 36px;
-    padding: 4px;
+    padding: 8px;
 
     background: #fff;
-    border: 2px solid #1d4f90;
+    border: 2px solid #666;
+    color: #666;
     text-align: center;
+
 
     font-size: 16px;
     display:inline-block;
@@ -240,10 +244,11 @@ window.history.forward();
 
 
 
+
   <script>
+    $( document ).ready(function() {
+  
 
-
-  $( document ).ready(function() {
 
   //var url = window.location.href;
   //var link1 = window.location.href.split("/");
@@ -407,6 +412,7 @@ function removeRecord() {
 
 
 
+
     //function myFunction() {
   //var element = document.getElementById("myDIV");
   //element.classList.add("mystyle");
@@ -428,18 +434,12 @@ function removeRecord() {
 
 
 
-  var i;
 
-  function my_func(){
-      $('#add_fed').sumbit();
-  }
 
-  function my_func2(){
-      $('#upl_file').sumbit();
-  }
-          
+  var link = window.location.href
 
  $(function(){
+
 
      $('#url').html(link);
 
@@ -492,6 +492,7 @@ function removeRecord() {
 
 
 
+
     var x='<select name="field">{% for col in columns %}<option value="{{col}}">{{col}}</option>{% endfor %}</select>'
     
 
@@ -500,13 +501,12 @@ function removeRecord() {
       $(x).insertBefore('#more_fields');
 
     });
-  
-    
-});
-    
-    
 
-   
+
+   $('.sticky-wrap.table-sticky > table > thead').clone().prependTo('.sticky-thead > table');
+    $(link).prependTo('#url');
+
+   });
 
 
 
@@ -521,20 +521,9 @@ $(window).scroll(function() {
   
  if (wS >= hT){
 
-     $('.sticky-thead table').css('display','block');
-     $('.sticky-thead table').css('position','fixed');
-     $('.sticky-thead table').css('top','0');
+    $('.sticky-thead').css('position','fixed');
     
    }
-
-
- else if (wS < hT){
-
-     $('.sticky-thead table').css('display','none');
-
-   }
-
-
   
 });
 
@@ -552,9 +541,11 @@ $(document).ready(function () {
   </style>
   
 
-
-        <title>FedSize Report</title>
-
+    {% if title %}
+        <title>Flask Blog - {{ title }}</title>
+    {% else %}
+        <title>Flask Blog</title>
+    {% endif %}
 </head>
 <body onload="noBack();">
     <header>
@@ -566,7 +557,7 @@ $(document).ready(function () {
             <div style="text-align: center;"><a class="logo" href="/">Fed Size Report</a>
                                         {% if current_user.is_authenticated %}
                                            
-                                           <a id="logout" class="nav-item nav-link" href="{{ url_for('logout') }}">Logout <i class="fa fa-sign-out"></i></a></div>
+                                           <a id="logout" class="nav-item nav-link" href="{{ url_for('logout') }}"><i class="fa fa-sign-out"></i> Logout</a></div>
 
                                         {% endif %}
             
@@ -599,7 +590,6 @@ $(document).ready(function () {
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     
-
     
 </body>
 </html>

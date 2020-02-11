@@ -4,42 +4,15 @@
 
       <div class="row">
          <div class="col-md-12">
-            
 
 
             <div class="search-menu">
 
-            <div class="progress_bar third">
-              <a href="/"><div class="numberCircle one">1</div></a>
-              <hr class="lineCircle">
-                <a href="/uploader"><div class="numberCircle two">2</div></a>
-              <hr class="lineCircle">
-              <div class="numberCircle three">3</div>
-            </div>
-
-            <div class="progress_bar_bottom">
-              <div class="numberCircle">UPLOAD FILE</div>
-              <hr class="lineCircle">
-              <div class="numberCircle">VALIDATE</div>
-              <hr class="lineCircle">
-              <div class="numberCircle">ANALYZE/DOWNLOAD</div>
-            </div>
-
-            <a class="go_back" href='/uploader'><i class="fa fa-arrow-left"></i> Go to Step 2</a>
-            <h1>STEP 3: ANALYZE & DOWNLOAD REPORT</h1>
-            <hr>
-
-          
-            <p>Your new report now contains city sizes.  You can view the full report below in the "All" tab or view the report by city size by clicking on any city size tab. Download the report at any time by clicking on the download button. Please note that you will download a report of your current view. If you want to download the full report, be sure you are in the "All" tab.</p>
-            <p>&nbsp;</p>
-
               
 
-              <form action = "/analysis_report" method = "POST" enctype = "multipart/form-data">
+              <form action = "http://localhost:5000/analysis_report" method = "POST" enctype = "multipart/form-data">
 
-              <div id="wrapper">
-                
-              </div>
+              <div id="wrapper"></div>
               
                     
              
@@ -95,10 +68,9 @@
                                
                                 {{ table|safe }}
                             {% endfor %}
-
-
                          
                         </div>
+
 
                         <div class="sticky-thead">
                             {% for table in tables %}
@@ -114,6 +86,7 @@
 
                 
                         
+
                     </div>
                   </div>
           </div>

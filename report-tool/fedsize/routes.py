@@ -23,13 +23,15 @@ app.config['UPLOADS_XLS'] = "/report-tool/fedsize/uploads/xls"
 app.config['UPLOADS_SIZE'] = "/report-tool/fedsize/uploads/size"
 #"/Users/olyafomicheva/desktop/fedsize_report/fedsize/uploads/size"
 
+
 app.config['FED_UPLOADS'] = "/report-tool/fedsize/federations"
 # "/Users/olyafomicheva/desktop/fedsize_report/fedsize/federations"
 
 app.config["ALLOWED_FILE_EXTENSIONS"] = ["CSV", "XLS", "XLSX"]
+
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
 
-db.create_all()
+
 
 
 #validates file extention
@@ -73,8 +75,10 @@ def home():
 @app.route("/login", methods=['GET', 'POST'])
 #user login
 def login():
+
     x = bcrypt.generate_password_hash("fedsize").decode('utf-8')
     # x=bcrypt.check_password_hash(up, 'fedsize')
+
 
     if current_user.is_authenticated:
         return redirect(url_for('uploader'))
@@ -87,7 +91,7 @@ def login():
             return redirect(next_page) if next_page else redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
-            return redirect('/login')
+            return redirect('/')
 
     return render_template('login.html', title='Login', form=form)
 
@@ -103,10 +107,12 @@ def uploader():
 
             #verifies that filename is not blank
             if file.filename == '':
+
                     flash('No file selected or uploading')
                     return redirect('/')
 
             #verifies file type
+
             if not allowed_file(file.filename):
                     flash('Unsupported file type')
                     return redirect('/')
@@ -132,6 +138,7 @@ def uploader():
 
             #verifies csv format
             if not check_csv(filename):
+
                 try:
                     #read excel file
                     upl_file = pd.read_excel(path, sheet_name = 0)
@@ -173,9 +180,8 @@ def uploader():
         org_filename = session.get('org_filename')
         columns = session.get('file_columns')
 
+
         return render_template("upload.html", org_filename=org_filename, filename=filename, columns=columns)
-
-
 
 
 @app.route("/add_community", methods=["GET", "POST"])
@@ -252,6 +258,7 @@ def remove_record(community):
 
 
 
+
 @app.route('/federation_by_size/<string:size>', methods=["GET", "POST"])
 def federation_by_size(size):
 
@@ -278,11 +285,11 @@ def federation_by_size(size):
     y = x.get_group(size)
     num = y.shape[0]
 
+
     return render_template("federation_by_size.html",
                            tables=[y.to_html(classes='table-sticky sticky-enabled', index=False)],
                            fed_sizes=city_size_num, num=num,
                            records_num=session.get('records_num'))
-
 
 @app.route('/federation_by_size_all', methods=["GET", "POST"])
 #function that displays all file records
@@ -374,6 +381,7 @@ def federation_by_size_all():
         report = pd.read_excel(path, index=False)
         city_size_num = pd.read_csv(session.get("path_city_size_num"))
 
+
         return render_template("federation_by_size_all.html",
                                tables=[report.to_html(classes='table-sticky sticky-enabled', index=False)],
                                fed_sizes=city_size_num, columns=columns, filename=filename,
@@ -443,6 +451,7 @@ def download_all():
 
     filename_x = session.get('filename')
     filepath = session.get('file_path')
+
 
     #report = pd.read_csv(filepath)
 
@@ -516,6 +525,7 @@ def uploader_fed():
                 feds.to_csv(os.path.join(app.config["UPLOADS"], 'federations.csv'), index=False)
 
         return redirect('/add_fed_file')
+
 
 
 
