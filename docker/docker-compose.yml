@@ -6,6 +6,7 @@ services:
         image: mysql/mysql-server:5.7
         ports:
             - 3306/tcp
+        restart: always
         container_name: dbserver
         environment:
             MYSQL_RANDOM_ROOT_PASSWORD: "yes"
@@ -25,5 +26,7 @@ services:
              - mysql
         ports:
              - "80:5000"
+        volumes:
+           - ~/utils:/utils
 
 

@@ -1,4 +1,4 @@
-Community,City-Size,Federation Name ,Notes
+Community,City-Size,Federation Name,Notes
 Akron,5SmallFed,Jewish Community Board of Akron,
 Ann arbor,3Inter,Jewish Federation of Greater Ann Arbor,
 Arkansas,5SmallFed,Jewish Federation of Arkansas,
@@ -145,3 +145,16 @@ Wilkes-barre,5SmallFed,Jewish Community Alliance of Northeastern Pennsylvania,
 Windsor on,5SmallFed,Windsor Jewish Federation,
 Winnipeg mb,3Inter,Jewish Federation of Winnipeg ,
 Youngstown,5SmallFed,Youngstown Area Jewish Federation,
+Augusta,5SmallFed,Augusta Jewish Federation,
+Greater Metrowest,1Large,Jewish Federation of Greater MetroWest NJ ,"On public websites/registration pages, Community should be identified as Greater Metrowest "
+Jfna,1Large,Jewish Federations of North America,
+Montreal,1Large,Federation CJA,
+New York City,1Large,UJA Federation of New York,
+Northeastern New York,3Inter,Jewish Federation of Northeastern New York,
+Northern New Jersey,2LrgeInter,Jewish Federation of Northern New Jersey,
+Rochester,2LrgeInter,Jewish Federation of Greater Rochester,
+Rockland County,5SmallFed,Jewish Federation of Rockland County,
+Southern New Jersey,3Inter,Jewish Federation of Southern New Jersey,
+Stamford,3Inter,"United Jewish Federation of  Greater Stamford, New Canaan & Darien",
+Toronto,1Large,UJA Federation of Greater Toronto,
+Western Massachusetts,3Inter,The Jewish Federation of Western Massachusetts,

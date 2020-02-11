@@ -9,15 +9,15 @@
     
 
     <!--<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.css') }}">-->
-    
-    <link rel="stylesheet" href="https://jfnafedlab.org/assets/css/vendors-crm.min.css?v=201710261156">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://jfnafedlab.org/assets/css/vendors-crm.min.css">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='main.min.css') }}">
     <script src="https://browser.sentry-cdn.com/4.0.6/bundle.min.js" crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
    
 
-    <script src="https://fedweb-assets.s3.amazonaws.com/fed-42/1484/jquery.lettering.js"></script>
+
     <script src="{{ url_for('static', filename='main.js') }}"></script>
     <script src="https://jfnafedlab.org/assets/js/vendors.min.js"></script>
     <script src="https://jfnafedlab.org/assets/js/common.min.js"></script>
@@ -25,13 +25,21 @@
     <script src="https://jfnafedlab.org/assets/js/roll_up.js"></script>
     <script src="https://jfnafedlab.org/assets/js/additional_js.js"></script>
 
+
+<script type = "text/javascript" >
+  function noBack(){
+window.history.forward();
+}</script>
+
+
+
   <style>
   
   .fed_size a{background: #1d4f90;
               color:#ffffff!important;}
 
   .fed_size a:hover{background: #e7ebef;
-                    color:#3d3d3d;}
+                    color:#3d3d3d!important;}
                     
   .result-table {margin-top: 0px;}
   .form-tabs {margin-bottom: 0px;}
@@ -49,7 +57,8 @@
           display: block;
           margin: 0 0 20px 0;}
 
-  .form-tabs .tabs li {max-width:20%;}       
+  .form-tabs .tabs li {max-width:20%;}
+  .form-tabs .tabs li a {font-weight:800;}
 
   table.dataframe, .dataframe th, .dataframe td {border: 1px solid #ccc!important;}
 
@@ -66,7 +75,9 @@
     margin-bottom: 30px;}
 
   .btn-blue-light {color: #ffffff!important;
-                   background-color: #78a7e1;} 
+                   background-color: #1d4f90;}
+
+  .btn-blue-light:hover {background-color: #6083b1;}
 
   .form-control #submit {min-width:auto;} 
 
@@ -75,8 +86,13 @@
 
   .go_back{color: #1d4f90!important;}
 
-  .numberCircle {
-    border-radius: 50%;
+
+  .progress_bar.third a:hover .one,
+  .progress_bar.third a:hover .two,
+  .progress_bar.second a:hover .one,
+  .numberCircle{
+    border-radius: 25px;
+
     width: 36px;
     height: 36px;
     padding: 8px;
@@ -86,10 +102,146 @@
     color: #666;
     text-align: center;
 
-    font-size: 32px;}
+
+    font-size: 16px;
+    display:inline-block;
+    font-weight: 600;
+    color:#1d4f90;}
+
+  hr {display:inline-block;
+     width:40%;}
+
+  .go_back {display: block;
+            padding-bottom:30px;}
+
+  .progress_bar hr {border: 0.5px solid #1d4f90;
+                    margin-top: 10px;
+                    margin-bottom: 5px;}
+
+  .progress_bar {width: 95%;
+                 margin: 0 auto;}
+
+  .sticky-thead tbody {opacity:0;}
+
+  .wrapper{padding-top:30px;}
+
+  .one, 
+  .second .two,
+  .third .two,
+  .third .three {background: #1d4f90;
+                color: #fff;}
+
+  .progress_bar_bottom {padding-bottom:30px;}
+
+  .progress_bar_bottom .numberCircle{width:auto;}
+  .progress_bar_bottom hr{width:33%;}
 
 
-  </style>
+  .progress_bar_bottom  .numberCircle{border: none;
+                                       color:#1d4f90;
+                                       border: none;
+                                       background: none;}
+
+  .progress_bar_bottom hr{border:none;}
+
+  .container {width: 95%;
+              margin: 0 auto;}
+
+
+  table tr.active { display: table-row; }
+
+  .load_more {display: table-cell;
+              margin-top:20px;}
+
+
+
+ .sticky-thead > table{border: none!important;}
+
+ .invalid-feedback span {color:red;}
+
+ .form-control input:not(.checkbox-input):not(.radio-input):not([type=checkbox]):not(.select2-search__field) {
+    margin-bottom: 0px;}
+
+ .password-section,
+ .form-group .btn-blue-light{margin-bottom:30px;}
+
+  select{border: 1px solid #ccc;
+
+        background-color:#fff;}
+
+  .load_more{width:100px;}
+  .btn{max-width:250px;}
+
+  .fed_size_active{background-color: #e7ebef!important;}
+  .fed_size_active > a{color: #333!important;}
+  .body-content {min-height: 1000px;}
+  .table-sticky table tr{display:none;}
+  .table-sticky table tr:nth-child(-n+101){display:table-row;}
+
+  footer {padding-top:10px;
+          padding-bottom:30px;}
+
+  label {display: block;
+         margin-bottom: 5px;}
+
+  .inline {display:inline-block;}
+  .w-90 {width:90%;}
+
+  .add-fed{margin-left: 0px;margin-right: 0px;}
+  .add-fed .col-md-3 {padding:0;}
+
+  .add-fed input{border: 1px solid #e7ebef;
+                 color: #707070;
+                 height:40px;
+                 font-size: 14px;
+                 font-size: 1.4rem;
+                 outline: none;
+                 padding-left: 15px;}
+
+  .add-fed input{margin:0!important;}
+
+  .fa-minus,
+  .remove-fed,
+  .another-fed {border-radius: 30px;
+                padding: 2px 3px;
+                border: 2px solid #1d4f90;
+                color: #fff;
+                background: #1d4f90;
+                margin-top: 11px;
+                font-size: 1rem;}
+
+  td .fa-minus {margin-right:5px;}
+
+  .remove-fed:hover,
+  .another-fed:hover {border: 2px solid #6083b1;
+                      background: #6083b1;}
+  #add-community,
+  #change-size{display:none;}
+
+
+
+/* The actual popup */
+.popup{box-shadow: 0 5px 15px rgba(0,0,0,.5);
+       position: fixed !important;
+       top: 50% !important;
+       left:20%;
+       width:60%;
+       display:none;
+       padding:25px;
+       background:#fff;
+       z-index:999;}
+
+.popup {text-align:center;}
+
+.popup p{padding-bottom:25px;}
+#delete-com{margin-right:20px;}
+
+#com-name{font-weight:800;}
+
+</style>
+
+
+
 
 
 
@@ -97,11 +249,167 @@
     $( document ).ready(function() {
   
 
-  var url = window.location.href;
-  document.getElementById("url").innerHTML = url.substring(url.lastIndexOf('/')+1);
+
+  //var url = window.location.href;
+  //var link1 = window.location.href.split("/");
+  //var link = link1[link1.length - 1];
+  //var link = link2.concat("test");
+  //var element = document.getElementById("url")
+  //$('.'+link).addClass('active');
+
+    size_tr = $('.table-sticky table tr').size();
+    if (size_tr<101){
+        $('.load_more').hide();
+    }
+    console.log(size_tr);
+    x=101;
+    $('table tr:lt('+x+')').show();
+    $('.load_more').click(function (e) {
+        e.preventDefault();
+        x= (x+100 <= size_tr) ? x+100 : size_tr;
+        $('.table-sticky table tr:lt('+x+')').show();
+
+        console.log(x, size_tr);
+        if  (size_tr==x) {
+
+            $('.load_more').hide();
+        }
+    });
+
 
 
   });
+
+
+
+
+$(function(){
+
+
+
+    $('#clear').click(function() {
+
+        $('#add-community').hide();
+
+
+    });
+
+    $('#clear-size').click(function() {
+
+        $('#change-size').hide();
+
+    });
+
+
+    $('.another-fed').click(function(){
+
+
+        $('<div class="add-fed row">\n' +
+            '                             <div class="col-md-3">\n' +
+            '                                <label class="form-control-label" for="email">Community</label>\n' +
+            '                                <input class="form-control form-control-lg inline w-90" id="community" name="community" required="" type="text" value="">\n' +
+            '                             </div>\n' +
+            '\n' +
+            '                             <div class="col-md-3">\n' +
+            '                                <label class="form-control-label">City Size</label>\n' +
+            '                                <select name="fedsize" class="inline w-90">\n' +
+            '                                  <option value="" disabled selected>Select Federation Size</option>\n' +
+            '                                  {% for size_type in size_types %}\n'+
+                '                                      <option value="{{size_type}}">{{size_type}}</option>\n'+
+                '                                  {% endfor %}\n' +
+            '                                </select>\n' +
+            '                             </div>\n' +
+            '\n' +
+            '                             <div class="col-md-3">\n' +
+            '                                 <label class="form-control-label">Federation Name</label>\n' +
+            '                                 <select name="federation" class="inline w-90">\n' +
+            '                                  <option value="" disabled selected>Select Federation</option>\n' +
+            '                                  {% for federation in federations %}\n'+
+                '                                      <option value="{{federation}}">{{federation}}</option>\n'+
+                '                                  {% endfor %}\n' +
+            '                                </select>\n' +
+            '                             </div>\n' +
+            '\n' +
+            '                             <div class="col-md-3">\n' +
+            '                                 <label class="form-control-label">Notes</label>\n' +
+            '                                 <input class="form-control form-control-lg inline w-90" id="note" name="note" type="text" value="">\n' +
+            '                                 <i class="fa fa-minus remove-fed" style="float:right;" onclick="removeFed()"></i>\n' +
+            '                             </div>\n' +
+            '                        </div>').insertBefore('#add-community .buttons');
+
+        $('.add-fed:last-child .another-fed').addClass('fa-minus');
+     });
+
+
+    $('.sticky-wrap > table:nth-child(1) > tbody:nth-child(2) > tr td:nth-child(1)').each(function () {
+
+
+
+     $('<i class="fa fa-minus rem"></i>').prependTo($(this));
+     });
+
+
+
+    $('.rem').each(function (){
+         var com = $(this).parent().text();
+         //$('<a href="/remove_record/'+com+'">test</a>').prependTo('#myPopup');
+
+         $(this).click(function(){
+         var com = $(this).parent().text();
+         $('<a href="/remove_record/'+com+'" class="btn btn-blue-light inline" id="delete-com">Yes, Delete</a>').insertBefore('#cancel-delete');
+         $('#com-name').html(com);
+         $('#myPopup').show();
+         });
+
+         });
+
+
+    $('#cancel-delete').click(function(){
+
+        $('#myPopup').hide();
+        $('#myPopup #delete-com').remove();
+    });
+
+    $('.btn-add-community').click(function(){
+        $('#add-community').show();
+        $('#change-size').hide();
+        $('#myPopup').hide();
+        $('#myPopup #delete-com').remove();
+     });
+
+
+    $('.btn-change-size').click(function(){
+        $('#change-size').show();
+        $('#add-community').hide();
+        $('#myPopup').hide();
+        $('#myPopup #delete-com').remove();
+    });
+
+
+    $('div').click(function() {
+    var theClass = $(this).attr("class"); // "this" is the element clicked
+    $(theClass).prependTo('.test');
+    
+  });
+
+
+
+
+    });
+
+
+function removeFed() {
+
+         $(event.target).parent().parent().remove();
+
+  };
+
+function removeRecord() {
+
+         $(event.target).parent().parent().remove();
+
+  };
+
 
 
 
@@ -113,7 +421,17 @@
 
 
 
-  <script>
+  <script type="text/javascript">
+
+  var link = window.location.href.split("/");
+  var link = link[link.length - 1];
+
+  //var link = link.concat('test');
+
+  var el = document.getElementById(link);
+ // console.log(el);
+  //el[0].className += "ttt";
+
 
 
 
@@ -121,6 +439,59 @@
   var link = window.location.href
 
  $(function(){
+
+
+     $('#url').html(link);
+
+    $('div').click(function() {
+    var theClass = $(this).attr("class"); // "this" is the element clicked
+    //$(theClass).prepandTo('.test');
+    
+    
+  });
+
+    $("#file-upload3").on('change',function() {
+     $("#upl_file").submit();
+});
+
+
+    $("#file-upload2").on('change',function() {
+     $("#add_fed").submit();
+});
+
+   
+  // for (i = 0; i < 5; i++) {
+      //  $('table tr:nth-child('+i+')').addClass('active');
+      //}
+ //$('table tr').filter(':lt(6)').addClass('active');
+    
+
+
+
+    //$('a.load_more').on('click', function(e) {
+    //  e.preventDefault();
+    //  var $rows = $('table tr');
+    //  var lastActiveIndex = $rows.filter('.active:last').index();
+    //  console.log(lastActiveIndex);
+    //  $rows.filter(':lt(' + (lastActiveIndex + 6) + ')').addClass('active');
+   // });
+
+
+
+
+
+    $('{% if current_user.is_authenticated %}<footer><div class="container"><div class="row"><div class="col-12"><div style="text-align: center;"><a id="add_fed" href="/add_community" style="margin-top:20px;" target="_blank"><label for="file-upload2" class="btn" style="display:table-cell;float:right;"><i class="fa fa-cloud-upload"></i> Add Communities</label></form></div></div></div></div></footer>{% endif %}').appendTo('body');
+
+
+
+
+
+
+    $('.sticky-wrap.table-sticky > table').clone().prependTo('.sticky-thead');
+    //$('.body > header > div > div > div > div > a.logo').clone().prependTo('.sticky-thead');
+
+
+
 
     var x='<select name="field">{% for col in columns %}<option value="{{col}}">{{col}}</option>{% endfor %}</select>'
     
@@ -146,7 +517,7 @@ $(window).scroll(function() {
        hH = $('sticky-wrap.table-sticky').outerHeight(),
        wH = $(window).height(),
        wS = $(this).scrollTop();
-    console.log((hT-wH) , wS);
+    //console.log((hT-wH) , wS);
   
  if (wS >= hT){
 
@@ -154,6 +525,11 @@ $(window).scroll(function() {
     
    }
   
+});
+
+$(document).ready(function () {
+
+
 });
 
   </script>
@@ -171,7 +547,7 @@ $(window).scroll(function() {
         <title>Flask Blog</title>
     {% endif %}
 </head>
-<body>
+<body onload="noBack();">
     <header>
     <div class="container">
       <div class="row">

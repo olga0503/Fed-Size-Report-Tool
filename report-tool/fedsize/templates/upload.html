@@ -9,16 +9,20 @@
             <h1>STEP 2: SELECT COMMUNITY COLUMN</h1>
             <hr>
 
-            <p>Please select the title of the column where the list of Communities appears in your report. This application will add the related city size in an additional column to the right of community column.</p>
+
+            
+            <p>You have successfully uploaded the following file:  <b>{{org_filename}} </b><a href="/"><i class="fa fa-times-circle" style="color: #78a7e1;"></i></a></p>
             <p>&nbsp;</p>
-            <p>You have successfully uploaded the following file:  <b>{{filename}} </b><a href="/"><i class="fa fa-times-circle" style="color: #78a7e1;"></i></a></p>
+            <p>Please select the title of the column where the list of Communities appears in your report. This application will add the related city size in an additional column to the right of community column.</p>
+
+
 
             <form action = "http://localhost:5000/federation_by_size_all" method = "POST" enctype = "multipart/form-data" style="margin-top:20px;">
 
 
                     
-                    <select name="field">
-                      <option default>Select Column</option>
+                    <select name="field" required="">
+                      <option value="" disabled selected>Select Column</option>
                       {% for col in columns %} 
                           <option value="{{col}}">{{col}}</option>
                       {% endfor %}    
@@ -28,7 +32,7 @@
 
                     <button type="submit" class="btn btn-blue-light" style="display:inline-block;">Submit</button>
 
-               </form>
+            </form>
 
               
                 
@@ -38,5 +42,12 @@
         </div>
       </div>
 
+     <style>
+
+    footer{position:fixed;
+           width:100%;
+           bottom:0;}
+
+    </style>
       
 {% endblock content %}
