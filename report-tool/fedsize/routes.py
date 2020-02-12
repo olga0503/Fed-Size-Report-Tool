@@ -1,21 +1,29 @@
+from json import JSONEncoder
+
 import pandas as pd
 import numpy as np
 
 from datetime import datetime
-import time, xlrd, xlwt, os, time
+import urllib
+import time, xlrd, xlwt, os, time, json, requests
 from fedsize import app, db, bcrypt
 from flask_bcrypt import Bcrypt
-from flask import render_template, url_for, flash, redirect, request, session, send_from_directory
+from flask import render_template, url_for, flash, redirect, request, session, send_from_directory, jsonify
 from fedsize.forms import RegistrationForm, LoginForm
 from fedsize.models import User
 from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.utils import secure_filename
 
+from elasticsearch import Elasticsearch
+
 
 #UPLOAD_FOLDER = '/path/to/the/uploads'
 
+app.config['ELASTICSEARCH_URL'] = "http://127.0.0.1:9200"
+
 app.config['UPLOADS'] = "/report-tool/fedsize/uploads"
 #"/Users/olyafomicheva/desktop/fedsize_report/fedsize/uploads"
+
 
 app.config['UPLOADS_XLS'] = "/report-tool/fedsize/uploads/xls"
 #"/Users/olyafomicheva/desktop/fedsize_report/fedsize/uploads/xls"
@@ -23,16 +31,15 @@ app.config['UPLOADS_XLS'] = "/report-tool/fedsize/uploads/xls"
 app.config['UPLOADS_SIZE'] = "/report-tool/fedsize/uploads/size"
 #"/Users/olyafomicheva/desktop/fedsize_report/fedsize/uploads/size"
 
-
 app.config['FED_UPLOADS'] = "/report-tool/fedsize/federations"
-# "/Users/olyafomicheva/desktop/fedsize_report/fedsize/federations"
+#"/Users/olyafomicheva/desktop/fedsize_report/fedsize/federations"
 
 app.config["ALLOWED_FILE_EXTENSIONS"] = ["CSV", "XLS", "XLSX"]
-
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
 
+db.create_all()
 
-
+es = Elasticsearch([app.config['ELASTICSEARCH_URL']])
 
 #validates file extention
 def allowed_file(filename):
@@ -75,10 +82,8 @@ def home():
 @app.route("/login", methods=['GET', 'POST'])
 #user login
 def login():
-
     x = bcrypt.generate_password_hash("fedsize").decode('utf-8')
     # x=bcrypt.check_password_hash(up, 'fedsize')
-
 
     if current_user.is_authenticated:
         return redirect(url_for('uploader'))
@@ -91,7 +96,7 @@ def login():
             return redirect(next_page) if next_page else redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check email and password', 'danger')
-            return redirect('/')
+            return redirect('/login')
 
     return render_template('login.html', title='Login', form=form)
 
@@ -107,12 +112,10 @@ def uploader():
 
             #verifies that filename is not blank
             if file.filename == '':
-
                     flash('No file selected or uploading')
                     return redirect('/')
 
             #verifies file type
-
             if not allowed_file(file.filename):
                     flash('Unsupported file type')
                     return redirect('/')
@@ -138,7 +141,6 @@ def uploader():
 
             #verifies csv format
             if not check_csv(filename):
-
                 try:
                     #read excel file
                     upl_file = pd.read_excel(path, sheet_name = 0)
@@ -180,8 +182,9 @@ def uploader():
         org_filename = session.get('org_filename')
         columns = session.get('file_columns')
 
-
         return render_template("upload.html", org_filename=org_filename, filename=filename, columns=columns)
+
+
 
 
 @app.route("/add_community", methods=["GET", "POST"])
@@ -193,7 +196,7 @@ def add_fed_file():
 
     # replace NaNs communities with 'None'
     if 'Notes' in feds.columns:
-        feds['Notes'].fillna('', inplace=True)
+        feds['Notes'].fillna(' ', inplace=True)
 
     return render_template("_test.html", tables=[feds.to_html(classes='table-sticky sticky-enabled', index=False)],
                            federations=federations, size_types=size_types)
@@ -258,7 +261,6 @@ def remove_record(community):
 
 
 
-
 @app.route('/federation_by_size/<string:size>', methods=["GET", "POST"])
 def federation_by_size(size):
 
@@ -285,11 +287,11 @@ def federation_by_size(size):
     y = x.get_group(size)
     num = y.shape[0]
 
-
     return render_template("federation_by_size.html",
                            tables=[y.to_html(classes='table-sticky sticky-enabled', index=False)],
                            fed_sizes=city_size_num, num=num,
                            records_num=session.get('records_num'))
+
 
 @app.route('/federation_by_size_all', methods=["GET", "POST"])
 #function that displays all file records
@@ -381,7 +383,6 @@ def federation_by_size_all():
         report = pd.read_excel(path, index=False)
         city_size_num = pd.read_csv(session.get("path_city_size_num"))
 
-
         return render_template("federation_by_size_all.html",
                                tables=[report.to_html(classes='table-sticky sticky-enabled', index=False)],
                                fed_sizes=city_size_num, columns=columns, filename=filename,
@@ -428,6 +429,45 @@ def animals():
     selected_animal = request.form.get('type')
     return render_template(animals.html, title='Animal Details', animal=selected_animal)
 
+@app.route('/api', methods=['GET', 'POST','PUT'])
+def api():
+    path = session.get('file_path')
+
+    report = pd.read_excel(path, sheet_name = 0)
+
+    result = []
+
+    for index, row in report.iterrows():
+        result.append(row.to_dict())
+
+    return jsonify(result[0])
+
+
+@app.route('/search', methods=['GET', 'POST'])
+def search():
+    q = request.form.get("q")
+
+    #y = '[{"Community": "Atlanta","City-Size": "xx","Federation Name": "testv", "Notes": "None"},{"Community": "York","City-Size": "xx","Federation Name": "testv", "Notes": "None"}]'
+    #path = session.get('file_path')
+    #report = pd.read_excel(path, sheet_name = 0)
+    # result = {}
+
+    feds = pd.read_csv(os.path.join(app.config['UPLOADS'], 'federations.csv'))
+    feds.fillna(' ', inplace=True)
+
+    for index, row in feds.iterrows():
+       es.index(index="test11", id=index, body=row.to_dict())
+
+    #f = open(os.path.join(app.config["UPLOADS_JSON"], "test.json"))
+    #f_content = f.read()
+
+    #es.index(index="test10", body=json.loads(f_content))
+    resp = es.search(index="test11", body={"query": {"multi_match": {"fields": ["*"] ,"query": q}}})
+    report = pd.DataFrame([item['_source'] for item in resp['hits']['hits']])
+    response = resp['hits']['hits']
+
+    return render_template("search.html", q=q, tables=[report.to_html(classes='table-sticky sticky-enabled', index=False)])
+
 
 @app.route("/download", methods=["GET", "POST"])
 def download():
@@ -451,7 +491,6 @@ def download_all():
 
     filename_x = session.get('filename')
     filepath = session.get('file_path')
-
 
     #report = pd.read_csv(filepath)
 
@@ -525,7 +564,6 @@ def uploader_fed():
                 feds.to_csv(os.path.join(app.config["UPLOADS"], 'federations.csv'), index=False)
 
         return redirect('/add_fed_file')
-
 
 
 
