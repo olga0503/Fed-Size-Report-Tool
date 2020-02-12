@@ -19,7 +19,7 @@ from elasticsearch import Elasticsearch
 
 #UPLOAD_FOLDER = '/path/to/the/uploads'
 
-app.config['ELASTICSEARCH_URL'] = "http://127.0.0.1:9200"
+app.config['ELASTICSEARCH_URL'] = "http://elasticsearch:9200/"
 
 app.config['UPLOADS'] = "/report-tool/fedsize/uploads"
 #"/Users/olyafomicheva/desktop/fedsize_report/fedsize/uploads"
