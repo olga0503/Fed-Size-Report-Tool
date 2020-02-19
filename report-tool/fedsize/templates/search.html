@@ -2,46 +2,224 @@
 {% block content %}
 
 
-<div class="container">
-  <div class="row">
-
-      <p>{{q}}</p>
-      <div>{{response}}</div>
+      <div class="row">
+         <div class="col-md-12">
+            <div class="search-menu">
 
 
+      <div class="form-tabs">
 
-       <div class="general-form">
+
+              <div class="row">
+                <div class="col-md-12">
+
+                    <!--<form id="upl_file" action="/uploader_fed" method="POST" enctype="multipart/form-data" style="display:inline-block;padding-right:15px;">
+                      <label for="file-upload3" class="btn btn-grey">
+                             <i class="fa fa-cloud-upload"></i> Import Communities
+                      </label>
+                      <input id="file-upload3" name="file" type="file" style="display:none;">
+                        {% with messages = get_flashed_messages() %}
+                          {% if messages %}
+                          <ul class=flashes>
+                          {% for message in messages %}
+                            <li style="color:red;">{{ message }}</li>
+                          {% endfor %}
+                          </ul>
+                          {% endif %}
+                        {% endwith %}
+
+                     </form>-->
+
+                    <a class="btn export-btn btn-grey download inline btn-add-community" target="_blank" style="margin-bottom:40px;"><i class="fa fa-plus"></i> Add Community</a>
+                    <a class="btn export-btn btn-grey download inline btn-change-size" target="_blank" style="margin:0 20px 40px 0;"><i class="fa fa-edit"></i> Change Fed Size</a>
+                    <form method="POST" action="/search" class="inline" style="width: 30%;">
+                    <button type="submit" id="submit_search"><i class="fa fa-search"></i></button>
+                    <input id="search-field" type="text" value="" placeholder="Search Community" name="q" style="height: 40px;width: 100%;padding-left: 33px;" class="inline md-col-4">
+                    <a href="/add_community" style="position: absolute; margin-top: 10px;margin-left: -22px;"><i class="fa fa-close"></i></a>
+
+
+                   </form>
+
+                    <div class="popup" id="myPopup">
+                        <p>Are you sure you wish to delete community <span id="com-name"></span>?</p>
+                        <button class="btn btn-grey inline" id="cancel-delete">Cancel</button>
+                    </div>
+
+                    <div class="popup-loader">
+
+                        <div class="loader"></div>
+
+                    </div>
+
+
+                    <form method="POST" action="/add_fed_file2" id="add-community">
+                        <div class="add-fed row">
+                             <div class="col-md-3">
+                                <label class="form-control-label" for="email">Community</label>
+                                <input class="form-control form-control-lg inline w-90" id="community" name="community" required="" type="text" value="">
+                                {% with messages = get_flashed_messages() %}
+                                  {% if messages %}
+                                  <ul class=flashes>
+                                  {% for message in messages %}
+                                    <li style="color:red;">{{ message }}</li>
+                                  {% endfor %}
+                                  </ul>
+                                  {% endif %}
+                                {% endwith %}
+                             </div>
+
+                             <div class="col-md-3">
+                                <label class="form-control-label">City Size</label>
+                                <select name="fedsize" class="inline w-90" required="">
+                                  <option value="" disabled selected>Select Federation Size</option>
+                                  {% for size_type in size_types %}
+                                      <option value="{{size_type}}">{{size_type}}</option>
+                                  {% endfor %}
+                                </select>
+                                {% with messages = get_flashed_messages() %}
+                                  {% if messages %}
+                                  <ul class=flashes>
+                                  {% for message in messages %}
+                                    <li style="color:red;">{{ message }}</li>
+                                  {% endfor %}
+                                  </ul>
+                                  {% endif %}
+                                {% endwith %}
+                             </div>
+
+                             <div class="col-md-3">
+                                 <label class="form-control-label">Federation Name</label>
+                                 <select name="federation" class="inline w-90" required="">
+                                  <option value="" disabled selected>Select Federation</option>
+                                  {% for federation in federations %}
+                                      <option value="{{federation}}">{{federation}}</option>
+                                  {% endfor %}
+                                </select>
+                                {% with messages = get_flashed_messages() %}
+                                  {% if messages %}
+                                  <ul class=flashes>
+                                  {% for message in messages %}
+                                    <li style="color:red;">{{ message }}</li>
+                                  {% endfor %}
+                                  </ul>
+                                  {% endif %}
+                                {% endwith %}
+                             </div>
+
+                             <div class="col-md-3">
+                                 <label class="form-control-label">Notes</label>
+                                 <input class="form-control form-control-lg inline w-90" id="note" name="note" type="text" value="">
+                                 <i class="fa fa-plus another-fed" style="float:right;"></i>
+                                 {% with messages = get_flashed_messages() %}
+                                  {% if messages %}
+                                  <ul class=flashes>
+                                  {% for message in messages %}
+                                    <li style="color:red;">{{ message }}</li>
+                                  {% endfor %}
+                                  </ul>
+                                  {% endif %}
+                                {% endwith %}
+                             </div>
+                        </div>
+
+
+                        <div class="buttons" style="text-align:right;">
+                        <button id="clear" class="btn btn-grey inline"
+                                style="margin:20px 15px 0 20px;">Clear</button>
+
+                        <button type="submit" class="btn btn-blue-light inline"
+                                style="margin:20px 0;">Submit</button>
+                        </div>
+
+
+
+                  </form>
+
+
+
+                  <form method="POST" action="/add_fed_file3" id="change-size">
+                        <div class="change-size row">
+
+
+                             <div class="col-md-4">
+                                 <label class="form-control-label">Federation Name</label>
+                                 <select name="federation" class="inline w-90" required="">
+                                  <option value="" disabled selected>Select Federation</option>
+                                  {% for federation in federations %}
+                                      <option value="{{federation}}">{{federation}}</option>
+                                  {% endfor %}
+                                </select>
+                                {% with messages = get_flashed_messages() %}
+                                  {% if messages %}
+                                  <ul class=flashes>
+                                  {% for message in messages %}
+                                    <li style="color:red;">{{ message }}</li>
+                                  {% endfor %}
+                                  </ul>
+                                  {% endif %}
+                                {% endwith %}
+                             </div>
+
+                             <div class="col-md-4">
+                                <label class="form-control-label">City Size</label>
+                                <select name="fedsize" class="inline w-90" required="">
+                                  <option value="" disabled selected>Select Federation Size</option>
+                                  {% for size_type in size_types %}
+                                      <option value="{{size_type}}">{{size_type}}</option>
+                                  {% endfor %}
+                                </select>
+                                {% with messages = get_flashed_messages() %}
+                                  {% if messages %}
+                                  <ul class=flashes>
+                                  {% for message in messages %}
+                                    <li style="color:red;">{{ message }}</li>
+                                  {% endfor %}
+                                  </ul>
+                                  {% endif %}
+                                {% endwith %}
+                             </div>
+
+                             <div class="col-md-4">
+                                  <div class="buttons" style="text-align:right;">
+                                    <button id="clear-size" class="btn btn-grey inline"
+                                            style="margin:20px 15px 0 20px;">Clear</button>
+
+                                    <button type="submit" class="btn btn-blue-light inline"
+                                            style="margin:20px 0;">Submit</button>
+                                  </div>
+                             </div>
+                        </div>
+
+
+                  </form>
+                </div>
+              </div>
+
+            </div>
+
+                {% if results_message %}
+                    <p class="search-word">{{results_message}}<span>{{q}} <a href="add_community"><i class="fa fa-close"></i></a></span></p>
+                {% endif %}
+
+                {% if no_results %}
+                    <h2 class="search-word">{{no_results}}<span>{{q}} <a href="add_community"><i class="fa fa-close"></i></a></span></h2>
+                {% endif %}
+
+          <div class="general-form">
                 <div class="main-table result-table">
                     <div class="result-table-wrapper">
                         <div class="sticky-wrap table-sticky">
-
+                        {% if tables %}
                             {% for table in tables %}
 
                                 {{ table|safe }}
+
                             {% endfor %}
-
-
-
+                        {% endif %}
                         </div>
-
-                        <div class="sticky-thead">
-                            {% for table in tables %}
-
-                                {{ table|safe }}
-                            {% endfor %}
-
-
-
-                        </div>
-
-                        <p style="margin-top:20px;"><a href="#" class="load_more btn btn-blue-light">Load more</a></p>
-
-
-
+                    <p style="margin-top:20px;"><a href="#" class="load_more btn btn-blue-light">Load more</a></p>
                     </div>
                   </div>
           </div>
-  </div>
-</div>
 
-{% endblock %}
+{% endblock content %}

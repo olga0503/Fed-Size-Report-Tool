@@ -196,6 +196,17 @@ window.history.forward();
 
   .add-fed input{margin:0!important;}
 
+  #submit_search{margin: 10px 0;
+                 background:none;
+                 position: absolute;}
+
+  form .fa-close,
+  #submit_search i{font-size:20px;
+                   color:#e7ebef;}
+
+  #submit_search i:hover,
+  form .fa-close:hover{color:#898989;}
+
   .fa-minus,
   .remove-fed,
   .another-fed {border-radius: 30px;
@@ -206,33 +217,88 @@ window.history.forward();
                 margin-top: 11px;
                 font-size: 1rem;}
 
-  td .fa-minus {margin-right:5px;}
+  td .fa-close {margin-right:7px;
+                padding: 2px 3px;
+                border: 2px solid #e7ebef;
+                border-radius: 20px;
+                background: #e7ebef;
+                color: #fff;}
 
   .remove-fed:hover,
   .another-fed:hover {border: 2px solid #6083b1;
                       background: #6083b1;}
+
   #add-community,
   #change-size{display:none;}
 
+   .popup{box-shadow: 0 5px 15px rgba(0,0,0,.5);
+           position: fixed !important;
+           top: 50% !important;
+           left:20%;
+           width:60%;
+           display:none;
+           padding:25px;
+           background:#fff;
+           z-index:999;}
 
+    .popup {text-align:center;}
 
-/* The actual popup */
-.popup{box-shadow: 0 5px 15px rgba(0,0,0,.5);
-       position: fixed !important;
-       top: 50% !important;
-       left:20%;
-       width:60%;
-       display:none;
-       padding:25px;
-       background:#fff;
-       z-index:999;}
+    .popup p{padding-bottom:25px;}
+    #delete-com{margin-right:20px;}
 
-.popup {text-align:center;}
+    #com-name{font-weight:800;}
 
-.popup p{padding-bottom:25px;}
-#delete-com{margin-right:20px;}
+    .popup-loader{
+           position: fixed!important;
+           top: 50% !important;
+           left:20%;
+           width:60%;
+           display:none;
+           padding:25px;
+           background:none;
+           z-index:999;
+           text-align:center;}
 
-#com-name{font-weight:800;}
+    .loader {
+      display: inline-block;
+      border: 8px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 8px solid #1d4f90;
+      width: 120px;
+      height: 120px;
+      -webkit-animation: spin 2s linear infinite; /* Safari */
+      animation: spin 2s linear infinite;
+    }
+
+    /* Safari */
+    @-webkit-keyframes spin {
+      0% { -webkit-transform: rotate(0deg); }
+      100% { -webkit-transform: rotate(360deg); }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .search-word{margin-bottom: 20px;}
+
+    .search-word span {background:#ccc;
+                       padding:10px;
+                       border-radius: 5px;
+                       margin-left:5px;
+                       font-size: 14px;}
+
+    .search-word i{margin-left: 4px;
+                   padding: 2px 3px;
+                   border: 2px solid #898989;
+                   border-radius: 20px;
+                   background: #898989;
+                   color: #fff;}
+
+    .search-word i:hover{border: 2px solid #898989;
+                         background: none;
+                         color: #898989;}
 
 </style>
 
@@ -242,8 +308,13 @@ window.history.forward();
 
   <script>
 
+  $(window).unload(function() {
+    $('.popup-loader').hide();
+   });
 
-  $( document ).ready(function() {
+  $(document).ready(function() {
+
+  $('.popup-loader').hide();
 
   //var url = window.location.href;
   //var link1 = window.location.href.split("/");
@@ -280,6 +351,18 @@ window.history.forward();
 
 $(function(){
 
+
+
+
+     $('#submit_search').click(function(){
+        $('#search-field').keypress();
+        $('.popup-loader').show();
+     });
+
+
+     $('#search-field').submit(function(){
+        $('.popup-loader').show();
+      });
 
 
     $('#clear').click(function() {
@@ -340,7 +423,7 @@ $(function(){
 
 
 
-     $('<i class="fa fa-minus rem"></i>').prependTo($(this));
+     $('<i class="fa fa-close rem"></i>').prependTo($(this));
      });
 
 
@@ -381,13 +464,17 @@ $(function(){
     });
 
 
-    $('div').click(function() {
+
+
+
+
+
+
+   $('div').click(function() {
     var theClass = $(this).attr("class"); // "this" is the element clicked
     $(theClass).prependTo('.test');
-    
+
   });
-
-
 
 
     });
