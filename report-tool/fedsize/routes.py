@@ -20,6 +20,7 @@ from elasticsearch import Elasticsearch
 #UPLOAD_FOLDER = '/path/to/the/uploads'
 
 app.config['ELASTICSEARCH_URL'] = "http://elasticsearch:9200/"
+#"http://127.0.0.1:9200"
 
 app.config['UPLOADS'] = "/report-tool/fedsize/uploads"
 #"/Users/olyafomicheva/desktop/fedsize_report/fedsize/uploads"
@@ -250,7 +251,7 @@ def add_fed_file3():
 def remove_record(community):
 
     feds = pd.read_csv(os.path.join(app.config["UPLOADS"], 'federations.csv'))
-    feds.drop(feds[feds['Community']==community].index, inplace=True)
+    feds.drop(feds[feds['Community'] == community].index, inplace=True)
 
     feds.sort_values(feds.columns[0], ascending=True, inplace=True)
 
@@ -445,28 +446,101 @@ def api():
 
 @app.route('/search', methods=['GET', 'POST'])
 def search():
-    q = request.form.get("q")
+    if request.method == "POST":
 
-    #y = '[{"Community": "Atlanta","City-Size": "xx","Federation Name": "testv", "Notes": "None"},{"Community": "York","City-Size": "xx","Federation Name": "testv", "Notes": "None"}]'
-    #path = session.get('file_path')
-    #report = pd.read_excel(path, sheet_name = 0)
-    # result = {}
+        q = request.form.get("q")
+        session['q']=q
 
-    feds = pd.read_csv(os.path.join(app.config['UPLOADS'], 'federations.csv'))
-    feds.fillna(' ', inplace=True)
+        feds = pd.read_csv(os.path.join(app.config["UPLOADS"], 'federations.csv'))
+        cols = list(feds.columns)
 
-    for index, row in feds.iterrows():
-       es.index(index="test11", id=index, body=row.to_dict())
+        feds.fillna(' ', inplace=True)
 
-    #f = open(os.path.join(app.config["UPLOADS_JSON"], "test.json"))
-    #f_content = f.read()
+        federations = list(set(feds['Federation Name']))
+        size_types = list(set(feds['City-Size']))
 
-    #es.index(index="test10", body=json.loads(f_content))
-    resp = es.search(index="test11", body={"query": {"multi_match": {"fields": ["*"] ,"query": q}}})
-    report = pd.DataFrame([item['_source'] for item in resp['hits']['hits']])
-    response = resp['hits']['hits']
 
-    return render_template("search.html", q=q, tables=[report.to_html(classes='table-sticky sticky-enabled', index=False)])
+        #y = '[{"Community": "Atlanta","City-Size": "xx","Federation Name": "testv", "Notes": "None"},{"Community": "York","City-Size": "xx","Federation Name": "testv", "Notes": "None"}]'
+        #path = session.get('file_path')
+        #report = pd.read_excel(path, sheet_name = 0)
+        # result = {}
+
+
+        for index, row in feds.iterrows():
+           es.index(index="communities1", id=index, body=row.to_dict())
+
+        #f = open(os.path.join(app.config["UPLOADS_JSON"], "test.json"))
+        #f_content = f.read()
+
+        #es.index(index="test10", body=json.loads(f_content))
+        #resp = es.search(index="communities1", body={"query": {"multi_match": {"fields": ["*"], "query": {"regex": {"query": "*"+q+"*"}}}}})
+
+        if q is None or q.strip()=="":
+            return redirect(url_for('add_fed_file'))
+
+        try:
+
+            resp = es.search(index="communities1", body={"query":{"query_string": {"query": "*"+q+"*", "fields":["*"]}}})
+            report = pd.DataFrame([item['_source'] for item in resp['hits']['hits']])
+
+            if report.shape[0] == 0:
+               #report = feds
+               no_results = "We don't have any results for "
+
+               return render_template("search.html", q=q, federations=federations, size_types=size_types, no_results=no_results)
+
+
+        except:
+
+            return render_template("search.html", q=q, tables=[report[cols].to_html(classes='table-sticky sticky-enabled', index=False)], federations=federations, size_types=size_types, no_results=no_results)
+
+        results_message = "Results for "
+
+        return render_template("search.html", q=q, tables=[report[cols].to_html(classes='table-sticky sticky-enabled', index=False)], federations=federations, size_types=size_types, results_message=results_message)
+
+    else:
+
+        q = session.get('q')
+
+        feds = pd.read_csv(os.path.join(app.config["UPLOADS"], 'federations.csv'))
+        cols = list(feds.columns)
+
+        feds.fillna(' ', inplace=True)
+
+        federations = list(set(feds['Federation Name']))
+        size_types = list(set(feds['City-Size']))
+
+        if q is None or q.strip() == "":
+            return redirect(url_for('add_fed_file'))
+
+        if q is None or q.strip() == "":
+            return redirect(url_for('add_fed_file'))
+
+        try:
+
+            resp = es.search(index="communities1",
+                             body={"query": {"query_string": {"query": "*" + q + "*", "fields": ["*"]}}})
+            report = pd.DataFrame([item['_source'] for item in resp['hits']['hits']])
+
+            if report.shape[0] == 0:
+                # report = feds
+                no_results = "We don't have any results for "
+
+                return render_template("search.html", q=q, federations=federations, size_types=size_types,
+                                       no_results=no_results)
+
+
+        except:
+
+            return render_template("search.html", q=q,
+                                   tables=[report[cols].to_html(classes='table-sticky sticky-enabled', index=False)],
+                                   federations=federations, size_types=size_types, no_results=no_results)
+
+        results_message = "Results for "
+
+        return render_template("search.html", q=q,
+                               tables=[report[cols].to_html(classes='table-sticky sticky-enabled', index=False)],
+                               federations=federations, size_types=size_types, results_message=results_message)
 
 
 @app.route("/download", methods=["GET", "POST"])
