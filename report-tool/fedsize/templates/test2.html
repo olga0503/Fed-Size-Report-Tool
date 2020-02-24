@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
- 
+
 
       <div class="row">
          <div class="col-md-12">
             <div class="search-menu">
-              
+
 
       <div class="form-tabs">
 
@@ -49,7 +49,35 @@
                         <button class="btn btn-grey inline" id="cancel-delete">Cancel</button>
                     </div>
 
+                    <div class="popup" id="myPopup2">
+                        {% if lk>0%}
+                        <p id="k">Are you sure you want to add
 
+                               {% for ki in k%}
+                                    <b>{{ki}}</b>
+                               {% endfor %}
+
+                            <span>?</span>
+
+                        </p>
+                        {% endif %}
+
+                        {% if lm>0 %}
+                        <p id="m">Are you sure you want to modify
+
+                               {% for mi in m %}
+                                    <b>{{mi}}</b>
+                               {% endfor %}
+
+                            <span>?</span>
+
+                        </p>
+                        {% endif %}
+
+
+                        <a href="/add_community_reconfirm" class="btn btn-blue-light inline" id="delete-com">Confirm</a>
+                        <a class="btn btn-grey inline" href="/add_fed_file">Cancel</a>
+                    </div>
 
                     <div class="popup-loader">
 
@@ -229,7 +257,7 @@
                         <div class="sticky-wrap table-sticky">
 
                             {% for table in tables %}
-                               
+
                                 {{ table|safe }}
 
                             {% endfor %}
@@ -239,5 +267,5 @@
                     </div>
                   </div>
           </div>
-   
+
 {% endblock content %}

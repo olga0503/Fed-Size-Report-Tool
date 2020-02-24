@@ -15,6 +15,8 @@
     <script src="https://browser.sentry-cdn.com/4.0.6/bundle.min.js" crossorigin="anonymous"></script>
 
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+
+
    
 
 
@@ -219,10 +221,14 @@ window.history.forward();
 
   td .fa-close {margin-right:7px;
                 padding: 2px 3px;
-                border: 2px solid #e7ebef;
+                border: 2px solid #ccc;
                 border-radius: 20px;
-                background: #e7ebef;
+                background: #ccc;
                 color: #fff;}
+
+   td .fa-close:hover {border: 2px solid #ccc;
+                       background: none;
+                       color: #ccc;}
 
   .remove-fed:hover,
   .another-fed:hover {border: 2px solid #6083b1;
@@ -258,6 +264,9 @@ window.history.forward();
            background:none;
            z-index:999;
            text-align:center;}
+
+     #myPopup2 {display:block;
+                top: 25% !important;}
 
     .loader {
       display: inline-block;
@@ -300,13 +309,68 @@ window.history.forward();
                          background: none;
                          color: #898989;}
 
+
+.dropbtn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+}
+
+.dropbtn:hover, .dropbtn:focus {
+  background-color: #3e8e41;
+}
+
+#myInput {
+  box-sizing: border-box;
+  background-image: url('searchicon.png');
+  background-position: 14px 12px;
+  background-repeat: no-repeat;
+  font-size: 16px;
+  padding: 14px 20px 12px 45px;
+  border: none;
+  border-bottom: 1px solid #ddd;
+}
+
+#myInput:focus {outline: 3px solid #ddd;}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f6f6f6;
+  min-width: 230px;
+  overflow: auto;
+  border: 1px solid #ddd;
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown a:hover {background-color: #ddd;}
+
+.show {display: block;}
+
+
 </style>
 
 
 
 
-
   <script>
+
+
 
   $(window).unload(function() {
     $('.popup-loader').hide();
@@ -463,6 +527,14 @@ $(function(){
         $('#myPopup #delete-com').remove();
     });
 
+
+   //if($('#k').val()!=''){
+  //  $('#myPopup2').show();
+ //  }
+
+//   if($('#m').val()!=''){
+  //  $('#myPopup2').show();
+   //}
 
 
 
@@ -630,13 +702,41 @@ $(document).ready(function () {
 
 });
 
-  </script>
+</script>
+
+<script>
+
+    /* When the user clicks on the button,
+    toggle between hiding and showing the dropdown content */
+    function myFunction() {
+      document.getElementById("myDropdown").classList.toggle("show");
+    }
+
+    function filterFunction() {
+      var input, filter, ul, li, a, i;
+      input = document.getElementById("myInput");
+      filter = input.value.toUpperCase();
+      div = document.getElementById("myDropdown");
+      a = div.getElementsByTagName("a");
+      for (i = 0; i < a.length; i++) {
+        txtValue = a[i].textContent || a[i].innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          a[i].style.display = "";
+        } else {
+          a[i].style.display = "none";
+        }
+      }
+    }
+
+</script>
 
   <style>
     
      table.dataframe, .dataframe th, .dataframe td {border: none;}
 
+
   </style>
+
   
 
 
