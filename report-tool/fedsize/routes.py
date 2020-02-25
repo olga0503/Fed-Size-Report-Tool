@@ -258,6 +258,7 @@ def add_fed_file2():
 
 
 
+
     new_records = new_record.to_msgpack()
     session['new_record'] = new_records
 
@@ -302,10 +303,11 @@ def add_community_confirm():
 
             #feds.drop(feds[feds[feds.columns[0]] == row[feds.columns[0]]].index, inplace=True)
 
+    y = new_record
     new_record = new_record.to_msgpack()
     session['new_record']= new_record
 
-    return render_template("test2.html", tables=[feds.to_html(classes='table-sticky sticky-enabled', index=False)],
+    return render_template("test2.html", tables=[y.to_html(classes='table-sticky sticky-enabled', index=False)],
                            federations=federations, size_types=size_types, k=k, m=m,lk=len(k),lm=len(m))
 
 
@@ -428,6 +430,7 @@ def federation_by_size_all():
 
         #capitalize comminities titles
         feds['Community'] = feds['Community'].str.title()
+        feds.to_csv(os.path.join(app.config["UPLOADS"], 'federations.csv'), index=False)
 
         #merge two data frames
         report = upl_file.merge(feds, left_on=merge_field, right_on='Community', how='left')
