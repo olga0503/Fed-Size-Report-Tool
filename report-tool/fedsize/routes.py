@@ -10,7 +10,7 @@ from fedsize import app, db, bcrypt
 from flask_bcrypt import Bcrypt
 from flask import render_template, url_for, flash, redirect, request, session, send_from_directory, jsonify
 from fedsize.forms import RegistrationForm, LoginForm
-from fedsize.models import User, User2
+from fedsize.models import User
 from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.utils import secure_filename
 
