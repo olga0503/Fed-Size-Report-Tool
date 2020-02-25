@@ -684,7 +684,7 @@ def logout():
 
 @app.route("/users")
 def users():
-    users = User2.query.all()
+    users = User.query.all()
     return redirect(url_for('home'))
 
 
