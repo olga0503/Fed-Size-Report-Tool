@@ -10,11 +10,14 @@ from fedsize import app, db, bcrypt
 from flask_bcrypt import Bcrypt
 from flask import render_template, url_for, flash, redirect, request, session, send_from_directory, jsonify
 from fedsize.forms import RegistrationForm, LoginForm
-from fedsize.models import User
+from fedsize.models import User, User2
 from flask_login import login_user, current_user, logout_user, login_required
 from werkzeug.utils import secure_filename
 
 from elasticsearch import Elasticsearch
+
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 
 
 #UPLOAD_FOLDER = '/path/to/the/uploads'
@@ -38,7 +41,25 @@ app.config['FED_UPLOADS'] = "/report-tool/fedsize/federations"
 app.config["ALLOWED_FILE_EXTENSIONS"] = ["CSV", "XLS", "XLSX"]
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
 
+admin = Admin(app)
+admin.add_view(ModelView(User, db.session))
+
 db.create_all()
+
+
+class AdminView(ModelView):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.static_folder = 'static'
+
+    def is_accessible(self):
+
+        return login.currrent_user.is_authincated
+
+    def inaccessible_callback(self, name, **kwargs):
+        if not self.is_accessible():
+            return redirect(url_for('home', next=request.url))
 
 es = Elasticsearch([app.config['ELASTICSEARCH_URL']])
 
@@ -191,6 +212,7 @@ def uploader():
 @app.route("/add_community", methods=["GET", "POST"])
 def add_fed_file():
 
+
     feds = pd.read_csv(os.path.join(app.config["UPLOADS"], 'federations.csv'))
     federations = list(set(feds['Federation Name']))
     size_types = list(set(feds['City-Size']))
@@ -202,10 +224,29 @@ def add_fed_file():
     return render_template("_test.html", tables=[feds.to_html(classes='table-sticky sticky-enabled', index=False)],
                            federations=federations, size_types=size_types)
 
+@app.route("/add_community2", methods=["GET", "POST"])
+def add_community2():
+
+    feds = pd.read_csv(os.path.join(app.config["UPLOADS"], 'federations.csv'))
+    federations = list(set(feds['Federation Name']))
+    size_types = list(set(feds['City-Size']))
+
+    # replace NaNs communities with 'None'
+    if 'Notes' in feds.columns:
+        feds['Notes'].fillna(' ', inplace=True)
+
+    x=pd.read_msgpack(session.get('data'))
+
+
+    return render_template("_test.html", tables=[x.to_html(classes='table-sticky sticky-enabled', index=False)],
+                           federations=federations, size_types=size_types, k=session.get('k'))
+
 
 @app.route("/add_fed_file2", methods=["GET", "POST"])
 def add_fed_file2():
     feds = pd.read_csv(os.path.join(app.config["UPLOADS"], 'federations.csv'))
+    federations = list(set(feds['Federation Name']))
+    size_types = list(set(feds['City-Size']))
 
     c_data = request.form.getlist("community")
     fedsize_data = request.form.getlist("fedsize")
@@ -215,6 +256,68 @@ def add_fed_file2():
     new_record = pd.DataFrame({feds.columns[0]:c_data, feds.columns[1]:fedsize_data, feds.columns[2]:f_data, feds.columns[3]:n_data})
     new_record[feds.columns[0]] = new_record[feds.columns[0]].str.title()
 
+
+
+    new_records = new_record.to_msgpack()
+    session['new_record'] = new_records
+
+
+    return render_template("_test.html", tables=[feds.to_html(classes='table-sticky sticky-enabled', index=False)],
+                           federations=federations, size_types=size_types)
+
+    #return render_template("_test.html", tables=[feds.to_html(classes='table-sticky sticky-enabled', index=False)],
+                           #data=c_data, data2=fedsize_data,data3=f_data, data4=n_data)
+
+
+
+@app.route("/add_community_confirm", methods=["GET", "POST"])
+def add_community_confirm():
+
+    feds = pd.read_csv(os.path.join(app.config["UPLOADS"], 'federations.csv'))
+    federations = list(set(feds['Federation Name']))
+    size_types = list(set(feds['City-Size']))
+
+    c_data = request.form.getlist("community")
+    fedsize_data = request.form.getlist("fedsize")
+    f_data = request.form.getlist("federation")
+    n_data = request.form.getlist("note")
+
+    new_record = pd.DataFrame({feds.columns[0]: c_data, feds.columns[1]: fedsize_data, feds.columns[2]: f_data, feds.columns[3]: n_data})
+    new_record[feds.columns[0]] = new_record[feds.columns[0]].str.title()
+
+    feds = pd.read_csv(os.path.join(app.config["UPLOADS"], 'federations.csv'))
+    federations = list(set(feds['Federation Name']))
+    size_types = list(set(feds['City-Size']))
+
+
+    k = []
+    m = []
+
+    for index, row in new_record.iterrows():
+        if row[feds.columns[0]] in list(feds[feds.columns[0]]):
+            k.append(row[feds.columns[0]])
+
+        else:
+            m.append(row[feds.columns[0]])
+
+            #feds.drop(feds[feds[feds.columns[0]] == row[feds.columns[0]]].index, inplace=True)
+
+    new_record = new_record.to_msgpack()
+    session['new_record']= new_record
+
+    return render_template("test2.html", tables=[feds.to_html(classes='table-sticky sticky-enabled', index=False)],
+                           federations=federations, size_types=size_types, k=k, m=m,lk=len(k),lm=len(m))
+
+
+@app.route("/add_community_reconfirm", methods=["GET", "POST"])
+def add_community_reconfirm():
+
+    feds = pd.read_csv(os.path.join(app.config["UPLOADS"], 'federations.csv'))
+    federations = list(set(feds['Federation Name']))
+    size_types = list(set(feds['City-Size']))
+
+    new_record = pd.read_msgpack(session.get('new_record'))
+
     for index, row in new_record.iterrows():
         if row[feds.columns[0]] in list(feds[feds.columns[0]]):
             feds.drop(feds[feds[feds.columns[0]] == row[feds.columns[0]]].index, inplace=True)
@@ -222,12 +325,8 @@ def add_fed_file2():
     feds = feds.append(new_record)
     feds.sort_values(feds.columns[0], ascending=True, inplace=True)
 
-
     feds.to_csv(os.path.join(app.config["UPLOADS"], 'federations.csv'), index=False)
     return redirect(url_for('add_fed_file'))
-
-    #return render_template("_test.html", tables=[feds.to_html(classes='table-sticky sticky-enabled', index=False)],
-                           #data=c_data, data2=fedsize_data,data3=f_data, data4=n_data)
 
 
 @app.route("/add_fed_file3", methods=["GET", "POST"])
@@ -467,7 +566,7 @@ def search():
 
 
         for index, row in feds.iterrows():
-           es.index(index="communities1", id=index, body=row.to_dict())
+           es.index(index="communities2", id=index, body=row.to_dict())
 
         #f = open(os.path.join(app.config["UPLOADS_JSON"], "test.json"))
         #f_content = f.read()
@@ -478,21 +577,22 @@ def search():
         if q is None or q.strip()=="":
             return redirect(url_for('add_fed_file'))
 
-        try:
 
-            resp = es.search(index="communities1", body={"query":{"query_string": {"query": "*"+q+"*", "fields":["*"]}}})
-            report = pd.DataFrame([item['_source'] for item in resp['hits']['hits']])
 
-            if report.shape[0] == 0:
+        resp = es.search(index="communities2", body={"size":1000,"query":{"query_string": {"query": "*"+q+"*", "fields":["*"]}}})
+
+        report = pd.DataFrame([item['_source'] for item in resp['hits']['hits']])
+
+        if report.shape[0] == 0:
                #report = feds
-               no_results = "We don't have any results for "
+            no_results = "We don't have any results for "
 
-               return render_template("search.html", q=q, federations=federations, size_types=size_types, no_results=no_results)
+            return render_template("search.html", resp=resp, q=q, federations=federations, size_types=size_types, no_results=no_results)
 
 
-        except:
+        #except:
 
-            return render_template("search.html", q=q, tables=[report[cols].to_html(classes='table-sticky sticky-enabled', index=False)], federations=federations, size_types=size_types, no_results=no_results)
+            #return render_template("search.html", q=q, tables=[report[cols].to_html(classes='table-sticky sticky-enabled', index=False)], federations=federations, size_types=size_types, no_results=no_results)
 
         results_message = "Results for "
 
@@ -579,6 +679,12 @@ def download_all():
 @app.route("/logout")
 def logout():
     logout_user()
+    return redirect(url_for('home'))
+
+
+@app.route("/users")
+def users():
+    users = User2.query.all()
     return redirect(url_for('home'))
 
 
