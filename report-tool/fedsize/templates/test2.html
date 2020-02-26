@@ -51,10 +51,10 @@
 
                     <div class="popup" id="myPopup2">
                         {% if lk>0%}
-                        <p id="k">Are you sure you want to add
+                        <p id="k">Are you sure you want to modify
 
                                {% for ki in k%}
-                                    <b>{{ki}}</b>
+                                    <b>{{ki}}<span class="comma">, </span></b>
                                {% endfor %}
 
                             <span>?</span>
@@ -63,10 +63,10 @@
                         {% endif %}
 
                         {% if lm>0 %}
-                        <p id="m">Are you sure you want to modify
+                        <p id="m">Are you sure you want to add
 
                                {% for mi in m %}
-                                    <b>{{mi}}</b>
+                            <b>{{mi}}<span class="comma">, </span></b>
                                {% endfor %}
 
                             <span>?</span>
@@ -75,7 +75,7 @@
                         {% endif %}
 
 
-                        <a href="/add_community_reconfirm" class="btn btn-blue-light inline" id="delete-com">Confirm</a>
+                        <a href="/add_community_reconfirm" class="btn btn-blue-light inline" >Confirm</a>
                         <a class="btn btn-grey inline" href="/add_community">Cancel</a>
                     </div>
 
