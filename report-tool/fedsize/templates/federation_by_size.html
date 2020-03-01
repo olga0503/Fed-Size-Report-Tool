@@ -4,10 +4,10 @@
 
       <div class="row">
          <div class="col-md-12">
-          <p id="url"></p>
-            <div class="search-menu">
-              <form action = "http://localhost:5000/analysis_report" method = "POST" enctype = "multipart/form-data">
+            
 
+
+            <div class="search-menu">
 
             <div class="progress_bar third">
               <a href="/"><div class="numberCircle one">1</div></a>
@@ -35,13 +35,22 @@
             <p>&nbsp;</p>
 
               
+
+              <form action = "/analysis_report" method = "POST" enctype = "multipart/form-data">
+
+              <div id="wrapper">
+                
+              </div>
               
+                    
              
-                    <!--<select name="field">
+                    <!--<select name="field" id="test">
                       {% for col in columns %} 
                           <option value="{{col}}">{{col}}</option>
                       {% endfor %}    
                     </select>
+
+                    
 
                     <input type="button" id="more_fields" class="btn btn-blue-light" onclick="add_fields();" value="Add More" />
                     
@@ -54,6 +63,7 @@
               <a class="btn export-btn btn-grey download" onclick="window.location.href='{{ url_for('download') }}';" target="_blank"><i class="fa fa-cloud-download"></i> Export Report</a>
               <!--<a class="btn export-btn btn-grey download" onclick="window.location.href='{{ url_for('analysis') }}';" target="_blank" >Advanced Analysis</a>-->
               <a class="btn new-report btn-grey download" href="/" target="_blank"><i class="fa fa-cloud-upload"></i> New File</a>
+               
 
 
       <div class="form-tabs">
@@ -61,9 +71,7 @@
                 <div class="col-md-12">
                   <ul class="tabs">
                     
-
                     <li class="fed_size active"><a href="/federation_by_size_all">All(</span><span>{{records_num}}</span><span>)</a></li>
-
 
                     {% for index, row in fed_sizes.iterrows() %}
 
@@ -88,9 +96,10 @@
                                
                                 {{ table|safe }}
                             {% endfor %}
+
+
                          
                         </div>
-
 
                         <div class="sticky-thead">
                             {% for table in tables %}
@@ -122,6 +131,5 @@
   el.className += "_active";
 
   </script>
-
    
 {% endblock content %}

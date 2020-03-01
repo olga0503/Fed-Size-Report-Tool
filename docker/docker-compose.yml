@@ -2,6 +2,16 @@ version: '2.3'
 
 services:
 
+    elasticsearch:
+        image: elasticsearch:7.6.0
+        ports:
+            - 9200/tcp
+        restart: always
+        container_name: elasticsearch
+        environment:
+          - discovery.type=single-node
+
+
     mysql:
         image: mysql/mysql-server:5.7
         ports:
@@ -24,9 +34,10 @@ services:
         container_name: report-tool
         depends_on:
              - mysql
+             - elasticsearch
         ports:
              - "80:5000"
         volumes:
-           - ~/utils:/utils
+           - ~/uploads:/uploads
 
 

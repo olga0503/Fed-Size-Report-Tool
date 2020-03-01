@@ -1,11 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
- 
+
 
       <div class="row">
          <div class="col-md-12">
             <div class="search-menu">
-              
+
 
       <div class="form-tabs">
 
@@ -40,16 +40,10 @@
 
                    </form>
 
-                    {% for user in users %}
-                             <p>{{user.email}}</p>
-                    {% endfor %}
-
                     <div class="popup" id="myPopup">
                         <p>Are you sure you wish to delete community <span id="com-name"></span>?</p>
                         <button class="btn btn-grey inline" id="cancel-delete">Cancel</button>
                     </div>
-
-
 
                     <div class="popup-loader">
 
@@ -58,9 +52,7 @@
                     </div>
 
 
-
-
-                    <form method="POST" action="/add_community_confirm" id="add-community">
+                    <form method="POST" action="/add_fed_file2" id="add-community">
                         <div class="add-fed row">
                              <div class="col-md-3">
                                 <label class="form-control-label" for="email">Community</label>
@@ -135,7 +127,7 @@
                         <button id="clear" class="btn btn-grey inline"
                                 style="margin:20px 15px 0 20px;">Clear</button>
 
-                        <button type="submit" id="sumbit_community" class="btn btn-blue-light inline"
+                        <button type="submit" class="btn btn-blue-light inline"
                                 style="margin:20px 0;">Submit</button>
                         </div>
 
@@ -151,14 +143,12 @@
 
                              <div class="col-md-4">
                                  <label class="form-control-label">Federation Name</label>
-
                                  <select name="federation" class="inline w-90" required="">
                                   <option value="" disabled selected>Select Federation</option>
                                   {% for federation in federations %}
                                       <option value="{{federation}}">{{federation}}</option>
                                   {% endfor %}
                                 </select>
-
                                 {% with messages = get_flashed_messages() %}
                                   {% if messages %}
                                   <ul class=flashes>
@@ -172,26 +162,12 @@
 
                              <div class="col-md-4">
                                 <label class="form-control-label">City Size</label>
-
-                                 <input type="text" name="fedsize" list="fedsize"/>
-                                  <datalist id="fedsize">
-
-
-                                  <select name="fedsize">
-
-                                      <option value="" disabled="" selected="">Select Federation Size</option>
-                                   {% for size_type in size_types %}
+                                <select name="fedsize" class="inline w-90" required="">
+                                  <option value="" disabled selected>Select Federation Size</option>
+                                  {% for size_type in size_types %}
                                       <option value="{{size_type}}">{{size_type}}</option>
-                                   {% endfor %}
-
-                                  </select>
-                                   </label>
-
-                                  </datalist>
-
-
-
-
+                                  {% endfor %}
+                                </select>
                                 {% with messages = get_flashed_messages() %}
                                   {% if messages %}
                                   <ul class=flashes>
@@ -221,23 +197,29 @@
 
             </div>
 
+                {% if results_message %}
+                    <p class="search-word">{{results_message}}<span>{{q}} <a href="add_community"><i class="fa fa-close"></i></a></span></p>
+                {% endif %}
 
+                {% if no_results %}
+                    <h2 class="search-word">{{no_results}}<span>{{q}} <a href="add_community"><i class="fa fa-close"></i></a></span></h2>
+                {% endif %}
 
           <div class="general-form">
                 <div class="main-table result-table">
                     <div class="result-table-wrapper">
                         <div class="sticky-wrap table-sticky">
-
+                        {% if tables %}
                             {% for table in tables %}
-                               
+
                                 {{ table|safe }}
 
                             {% endfor %}
-
+                        {% endif %}
                         </div>
                     <p style="margin-top:20px;"><a href="#" class="load_more btn btn-blue-light">Load more</a></p>
                     </div>
                   </div>
           </div>
-   
+
 {% endblock content %}

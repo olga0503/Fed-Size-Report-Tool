@@ -5,10 +5,27 @@
     <div class="container">
        <div class="row">
          <div class="col">
+
+            <div class="progress_bar second">
+              <a href="/"><div class="numberCircle one">1</div></a>
+              <hr class="lineCircle">
+              <div class="numberCircle two">2</div>
+              <hr class="lineCircle">
+              <div class="numberCircle three">3</div>
+            </div>
+
+            <div class="progress_bar_bottom">
+              <div class="numberCircle">UPLOAD FILE</div>
+              <hr class="lineCircle">
+              <div class="numberCircle">VALIDATE</div>
+              <hr class="lineCircle">
+              <div class="numberCircle">ANALYZE/DOWNLOAD</div>
+            </div>
+
+            
             <a class="go_back" href='/'><i class="fa fa-arrow-left"></i> Go to Step 1</a>
             <h1>STEP 2: SELECT COMMUNITY COLUMN</h1>
             <hr>
-
 
             
             <p>You have successfully uploaded the following file:  <b>{{org_filename}} </b><a href="/"><i class="fa fa-times-circle" style="color: #78a7e1;"></i></a></p>
@@ -17,7 +34,7 @@
 
 
 
-            <form action = "http://localhost:5000/federation_by_size_all" method = "POST" enctype = "multipart/form-data" style="margin-top:20px;">
+            <form action = "/federation_by_size_all" method = "POST" enctype = "multipart/form-data" style="margin-top:20px;">
 
 
                     
