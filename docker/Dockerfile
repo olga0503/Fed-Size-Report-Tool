@@ -26,6 +26,7 @@ COPY report-tool /report-tool
 
 WORKDIR /report-tool
 
+RUN pip install --upgrade
 RUN pip install -U setuptools
 RUN pip install pymysql mysqlclient
 RUN pip install --no-cache-dir -r /report-tool/requirements.txt
